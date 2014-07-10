@@ -30,8 +30,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'django_admin_bootstrapped.bootstrap3',
-    'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -89,14 +87,13 @@ LANGUAGES = PAGE_LANGUAGES = (
     ('en_nz', 'English'),
     )
 
-LOCALE_PATHS = [
-    APP_DIR + '/locale',
-    ]
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'django_autocomplete', "static"),
+    )
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from django.test import TestCase
+import unittest
+import doctest
 
 
 def setUp(test):
@@ -12,7 +13,7 @@ def tearDown(test):
 
 def load_tests(loader, tests, ignore):
     list_of_doctests = []
-    list_of_doctests.append('project.project.models')
+    list_of_doctests.append('project.models')
 
     suite = unittest.TestSuite()
     for t in list_of_doctests:

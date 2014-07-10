@@ -36,9 +36,6 @@
         short_name = field_name;
       }
 
-      // insert modal at in the dom
-      d = $('div#content').get(0);
-
       // build the modal into the dom
       var modal = quickElement('div', document.body, false,
            'id', field_name + '_modal',

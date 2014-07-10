@@ -2,9 +2,16 @@
 import unittest
 import doctest
 
+from django.test import RequestFactory
+
+from django_autocomplete.tests.models import TestModel
+from django_autocomplete.tests.models import TestFKModel
+
 
 def setUp(test):
-    pass
+    test.globs['request_factory'] = RequestFactory()
+    test.globs['TestModel'] = TestModel
+    test.globs['TestFKModel'] = TestFKModel
 
 
 def tearDown(test):
@@ -15,6 +22,8 @@ def load_tests(loader, tests, ignore):
     list_of_doctests = []
     list_of_doctests.append('django_autocomplete.views')
     list_of_doctests.append('django_autocomplete.widgets')
+    list_of_doctests.append('django_autocomplete.meta')
+    list_of_doctests.append('django_autocomplete.urls')
 
     suite = unittest.TestSuite()
     for t in list_of_doctests:
@@ -24,6 +33,12 @@ def load_tests(loader, tests, ignore):
             optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
         ))
 
+    list_of_docfiles = []
+    for t in list_of_docfiles:
+        tests.addTest(doctest.DocFileSuite(
+            t, setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
+        ))
     return tests
 
 if __name__ == '__main__':

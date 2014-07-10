@@ -1,0 +1,14 @@
+# django third party modules
+django-extensions>=1.3.7
+django-bootstrap3
+
+# quality control
+flake8>=2.1.0
+coverage
+
+# better interpreter
+bpython
+
+# documentation
+sphinx
+docutils

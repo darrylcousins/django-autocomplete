@@ -4,14 +4,13 @@ from django.contrib import admin
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
-
+urlpatterns = patterns(
+    '',
     # the models must define path to autocomplete view
-    url(r'^', include('django_autcomplete.urls')),
+    url(r'^api/', include('django_autocomplete.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^i18n/', include('django.conf.urls.i18n')),
-
     )
 
 urlpatterns = patterns(*urlpatterns)

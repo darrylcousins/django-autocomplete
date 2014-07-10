@@ -21,7 +21,8 @@ class AutocompleteView(View):
         Returns the dict response that will be serialized and returned:
 
             >>> view = AutocompleteView()
-            >>> view.model = Biomarker
+            >>> view.model = TestModel
+            >>> request = request_factory.get('/')
             >>> request.GET = {'term': 'blood'}
             >>> response = view.get(request)
             >>> response.status_code
@@ -37,32 +38,41 @@ class AutocompleteView(View):
         Returns the dict response that will be serialized and returned:
 
             >>> view = AutocompleteView()
+            >>> view.model = TestModel
+            >>> request = request_factory.get('/')
             >>> request.GET = {'term': 'blood'}
             >>> view.request = request
-            >>> view.model = Biomarker
 
             >>> context = view.get_context_data()
-            >>> len(context)
-            0
+            >>> print(context)
+            []
 
         With the appropiate object in db it finds something to return.
 
-            >>> bm = Biomarker(name='My marker',
-            ...     description='a description', user=admin)
-            >>> save(bm)
-            >>> request.GET = {'term': 'ark'}
+            >>> m = TestModel(name='Silly model',
+            ...     description='Dumb description')
+            >>> m.save()
+            >>> request.GET = {'term': 'silly'}
             >>> view.request = request
             >>> context = view.get_context_data()
             >>> len(context)
             1
+            >>> context[0]['label']
+            'Silly model'
 
-        All searchable fields are searched:
+        All searchable fields are searched, e.g. the description here:
 
-            >>> request.GET = {'term': 'desc'}
+            >>> request.GET = {'term': 'dumb'}
             >>> view.request = request
             >>> context = view.get_context_data()
             >>> len(context)
             1
+            >>> context[0]['label']
+            'Silly model'
+
+        Clean up.
+
+            >>> m.delete()
 
         """
         term = self.request.GET.get('term')
@@ -101,6 +111,7 @@ class AutocompleteView(View):
         Does the work to convert context data and return json response.
 
             >>> view = AutocompleteView()
+            >>> view.model = TestModel
             >>> context = [{'id': 1, 'label': 'My marker', 'value': 'My marker'}]
             >>> response = view.render_to_response(context)
             >>> response.status_code
@@ -125,7 +136,7 @@ class AutocompleteView(View):
             >>> print(keys)
             ['id', 'label', 'value']
 
-        Yes, looks the same, trust that it is json.
+        Yes, looks the same, trust me, it is json.
 
         """
         return json.dumps(context)
@@ -153,36 +164,49 @@ class AutocompleteView(View):
 
         Searches all text fields
 
-           >>> obj = Method(name='My cool method',
-           ...     description='a cool description', user=admin)
-           >>> save(obj)
+           >>> m = TestModel(name='My silly model',
+           ...     description='a cool description')
+           >>> m.save()
 
-           >>> view = Method.objects
+           >>> manager = TestModel.objects
            >>> queryset = manager.all()
 
         Verify that we have objects to search on::
 
            >>> queryset
-           [<Method: My cool method>]
+           [<TestModel: TestModel object>]
 
         Try a term that will fail::
 
+           >>> view = AutocompleteView()
+           >>> view.model = TestModel
            >>> view.search(queryset, ['empty'])
            []
 
         And a term that will return::
 
            >>> view.search(queryset, ['cool'])
-           [<Method: My cool method>]
+           [<TestModel: TestModel object>]
+
+
+        The model has a `autocomplete` attribute that is an instance of 
+        :class:`django_autocomplete.meta.AutocompleteMeta`. The test model
+        allows ForeignKey fields to be followed.
 
         Try a term that will follow the foreign key field and search in the related object::
 
-            >>> comp = Company(name='My nice company',
-            ...     description='a nice description', user=admin)
-            >>> save(comp)
-            >>> obj.company = comp
-            >>> view.search(queryset, ['cool'])
-            [<Method: My cool method>]
+            >>> fkm = TestFKModel(name='My nice company',
+            ...     description='a nice description')
+            >>> fkm.save()
+            >>> m.fkm = fkm
+            >>> m.save()
+            >>> view.search(queryset, ['nice'])
+            [<TestModel: TestModel object>]
+
+        Clean up.
+
+            >>> m.delete()
+            >>> fkm.delete()
 
         """
         q = None
@@ -192,10 +216,16 @@ class AutocompleteView(View):
                                 "not '%s'." % term.__class__.__name__)
             term = term.encode('utf-8')
             # search all possible fields
-            q = self._construct_q(q, self.model._meta.fields, term, follow_fks=True)
+            if self.model.autocomplete.fields:
+                fields = self.model.autocomplete.fields
+            else:
+                fields = self.model._meta.fields
+            q = self._construct_q(
+                q, fields, term,
+                follow_fks=self.model.autocomplete.follow_fks
+                )
 
         return queryset.filter(q)
-
 
     def _construct_q(self, q, fields, term, follow_fks=True):
         """
@@ -209,18 +239,19 @@ class AutocompleteView(View):
         Get the object manaager for an object that has fk fields.
 
             >>> view = AutocompleteView()
+            >>> view.model = TestModel
 
         Get the fields and check:
 
-            >>> fields = model().get_fields(with_biomodel_fields=True)
+            >>> fields = TestModel._meta.fields
             >>> [field.name for field in fields]
-            ['name', 'description', 'biomarker', 'foodattribute']
+            ['id', 'name', 'description', 'fkm']
 
         Biomarker and foodattribute are :class:`Biomarker` and :class:`FoodAttribute` respectively.
 
         Construct a query that spans all three objects:
 
-            >>> q = manager._construct_q(None, fields, 'search_term', follow_fks=True)
+            >>> q = view._construct_q(None, fields, 'silly_search', follow_fks=True)
 
         The query is an *OR* query:
 
@@ -228,18 +259,32 @@ class AutocompleteView(View):
             (OR: (...))
 
             >>> print('\\n'.join([str(child) for child in q.children]))
-            ('name__icontains', 'search_term')
-            ('description__icontains', 'search_term')
-            ('biomarker__name__icontains', 'search_term')
-            ('biomarker__description__icontains', 'search_term')
-            ('foodattribute__name__icontains', 'search_term')
-            ('foodattribute__description__icontains', 'search_term')
-            ('foodattribute__tagname__icontains', 'search_term')
+            ('name__icontains', 'silly_search')
+            ('description__icontains', 'silly_search')
+            ('fkm__name__icontains', 'silly_search')
+            ('fkm__description__icontains', 'silly_search')
 
-        The end.
+        The method will also accept a list of field names and will look up the field by name:
+
+            >>> fields = ['name']
+            >>> q = view._construct_q(None, fields, 'silly_search', follow_fks=False)
+            >>> print('\\n'.join([str(child) for child in q.children]))
+            ('name__icontains', 'silly_search')
+
+        Unacceptable fields raise error:
+
+            >>> fields = ['nofield']
+            >>> q = view._construct_q(None, fields, 'silly_search', follow_fks=False)
+            Traceback (most recent call last):
+            ...
+            django.db.models.fields.FieldDoesNotExist: TestModel has no field named 'nofield'
+
 
         """
         for field in fields:
+            # may be passed a list of field names
+            if not isinstance(field, models.fields.Field):
+                field = self.model._meta.get_field_by_name(field)[0]
             is_fk = isinstance(field, models.ForeignKey)
             if self.is_searchable_field(field) and not is_fk:
                 kwargs = {'%s__icontains' % field.name: term}

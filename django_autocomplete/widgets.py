@@ -11,9 +11,6 @@ from django.template.loader import render_to_string
 from django.utils.datastructures import MultiValueDict, MergeDict
 from django.utils.html import format_html
 from django.utils.translation import ugettext as _
-from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse, NoReverseMatch
-from django.forms.widgets import Select
 
 
 class SmallTextareaWidget(forms.Textarea):
@@ -22,12 +19,12 @@ class SmallTextareaWidget(forms.Textarea):
 
         >>> textarea = SmallTextareaWidget()
         >>> textarea
-        <biomarker.biobase.widgets.SmallTextareaWidget object at ...>
+        <django_autocomplete.widgets.SmallTextareaWidget object at ...>
 
     Renders with cols=20 and rows=4::
 
         >>> textarea.render('name', 'value')
-        '<textarea class="vTextField" cols="20" name="name" rows="4">...value</textarea>'
+        '<textarea class="vTextField" cols="20"...rows="4">...value</textarea>'
 
     """
     def __init__(self, attrs=None):
@@ -44,10 +41,27 @@ class AutocompleteSelectWidget(forms.Select):
 
         >>> autocomplete = AutocompleteSelectWidget()
         >>> autocomplete
-        <biomarker.biobase.widgets.AutocompleteSelectWidget object at ...>
+        <django_autocomplete.widgets.AutocompleteSelectWidget object at ...>
 
     Renders with input field and bootstrap modal
 
+        >>> from django.forms import ModelChoiceField
+        >>> queryset = TestModel.fkm.field.model.objects.all()
+        >>> field = ModelChoiceField(queryset=queryset,
+        ...     widget=AutocompleteSelectWidget)
+        >>> result = field.widget.render('fkm', None, attrs=dict(id='id_fkm'))
+        >>> for line in result.split('\\n'):
+        ...     print(line)
+        <input id="fkm_select" type="hidden" name="fkm_select" value="">
+        <input class="autocomplete-select form-control" id="id_fkm" name="fkm"\
+               placeholder="Search test models ..." style="display:inline-block" type="text" />
+        <script type="text/javascript">
+          (function($) {
+            if (window.AutocompleteSearch != undefined) {
+              AutocompleteSearch.init("id_fkm", "fkm", "test models");
+            }
+          }(jQuery));
+        </script>
 
     """
     allow_multiple_selected = False
@@ -101,8 +115,9 @@ class AutocompleteSelectWidget(forms.Select):
         final_attrs['placeholder'] = str(_('Search ')) + str(title) + ' ...'
 
         output = []
-        output.append('<input id="%(name)s_select" type="hidden" name="%(name)s_select" value="%(value)s">' % dict(
-            name=name, value=value))
+        output.append(
+            '<input id="%(name)s_select" type="hidden" name="%(name)s_select" value="%(value)s">' % dict(
+                name=name, value=value))
 
         output.append(format_html('<input{0} />', flatatt(final_attrs)))
         # only init if not a inline template form
@@ -121,17 +136,41 @@ class AutocompleteSelectWidget(forms.Select):
         return mark_safe('\n'.join(output))
 
 
-class AutocompleteSelectMulitpleWidget(forms.SelectMultiple):
+class AutocompleteSelectMultipleWidget(forms.SelectMultiple):
     """
     A autocomplete select widget to replace dropdown foreign key select widget
     for admin screens.
 
-        >>> autocomplete = AutocompleteSelectMulitpleWidget()
+        >>> autocomplete = AutocompleteSelectMultipleWidget()
         >>> autocomplete
-        <biomarker.biobase.widgets.AutocompleteSelectMulitpleWidget object at ...>
+        <django_autocomplete.widgets.AutocompleteSelectMultipleWidget object at ...>
 
-    Renders with input field and bootstrap modal
+    Renders with input field and javascript
 
+        >>> from django.forms import ModelChoiceField
+        >>> queryset = TestModel.fkm.field.model.objects.all()
+        >>> field = ModelChoiceField(queryset=queryset,
+        ...     widget=AutocompleteSelectMultipleWidget)
+        >>> result = field.widget.render('fkm', None,
+        ...   attrs=dict(id='id_fkm', title='M2m'))
+        >>> for line in result.split('\\n'):
+        ...     print(line)
+        <div class="btn-group">
+          <button class="btn btn-default" role="button" id="add_fkm">
+            Add test model</button>
+          <button class="btn btn-default disabled" role="button" id="remove_fkm">
+            Remove selected</button>
+        </div>
+        <div class="control-group">&nbsp;</div>
+        <select multiple="multiple" class="autocomplete-multipleselect form-control" id="id_fkm" name="fkm">
+        </select>
+          <script type="text/javascript">
+          (function($) {
+          if (window.AutocompleteMultipleSearch != undefined) {
+          AutocompleteMultipleSearch.init("id_fkm", "fkm", "test models");
+          }
+          }(jQuery));
+        </script>
 
     """
     allow_multiple_selected = True
@@ -186,7 +225,8 @@ class AutocompleteSelectMulitpleWidget(forms.SelectMultiple):
         output.append('<div class="control-group">&nbsp;</div>')
 
         final_attrs = self.build_attrs(attrs, name=name)
-        del final_attrs['title']
+        if 'title' in final_attrs:
+            del final_attrs['title']
         final_attrs['class'] = 'autocomplete-multipleselect form-control'
         output.append(format_html('<select multiple="multiple"{0}>', flatatt(final_attrs)))
         options = self.render_options(choices, value)
