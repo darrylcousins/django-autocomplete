@@ -24,18 +24,20 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost']
 
 # Application definition
 
 INSTALLED_APPS = (
+    'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'debug_toolbar.apps.DebugToolbarConfig',
 
     'bootstrap3',
     'project',
@@ -93,6 +95,7 @@ LANGUAGES = PAGE_LANGUAGES = (
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'django_autocomplete', "static"),
+    os.path.join(BASE_DIR, '..', 'django-admin-bootstrapped3', 'django_admin_bootstrapped', "static"),
     )
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

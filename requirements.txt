@@ -12,3 +12,6 @@ bpython
 # documentation
 sphinx
 docutils
+
+# for django dates
+pytz

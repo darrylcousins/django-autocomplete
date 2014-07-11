@@ -21,7 +21,10 @@ def make_api_urls(_urlpatterns, model):
 
     For example::
 
-        url(r'^', include('django_autocomplete.urls')),
+        url(r'', include('django_autocomplete.urls')),
+
+    .. note:: no prefix should be added because it is expected that the path to
+        the autocomplete url for a model is defined at model level.
 
     """
     _urlpatterns.append(
@@ -33,13 +36,11 @@ def make_api_urls(_urlpatterns, model):
                 ),
             name='autocomplete_view_%s' % (model.autocomplete.name)),
         )
-    return urlpatterns
+    return _urlpatterns
 
 urlpatterns = ['']
-
-for model in models.get_models(include_auto_created=True):
+for model in models.get_models(include_auto_created=False):
     if hasattr(model, 'autocomplete') and isinstance(model.autocomplete, AutocompleteMeta):
         urlpatterns = make_api_urls(urlpatterns, model)
 
 urlpatterns = patterns(*urlpatterns)
-

@@ -34,6 +34,60 @@ class SmallTextareaWidget(forms.Textarea):
         super(SmallTextareaWidget, self).__init__(attrs=final_attrs)
 
 
+class SearchInput(forms.TextInput):
+    """
+    <form class="navbar-form navbar-right" role="search" id="changelist-search" action="" method="get">
+      <div class="form-group">
+        <input type="text" class="form-control search-query" placeholder="{% trans 'Search' %}" size="40"
+               name="{{ search_var }}" value="{{ cl.query }}" id="searchbar" />
+      </div>
+    </form>
+
+    """
+    class Media:
+        js = (
+            settings.STATIC_URL + 'js/autocomplete_base.js',
+            settings.STATIC_URL + 'js/autocomplete_search.js',
+            )
+        css = {
+            'screen': (settings.STATIC_URL + 'css/autocomplete.css', )
+            }
+
+    def __init__(self, attrs=None, model=None):
+        super(SearchInput, self).__init__(attrs)
+        self.model = model
+
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = ''
+        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        if value != '':
+            # Only add the 'value' attribute if a value is non-empty.
+            final_attrs['value'] = force_text(self._format_value(value))
+        title = self.model._meta.verbose_name_plural.capitalize()
+        final_attrs['placeholder'] = str(_('Search ')) + title + ' ...'
+        final_attrs['class'] = 'form-control search-query'
+        final_attrs['size'] = '40'
+
+        output = []
+
+        output.append(format_html('<input{0} />', flatatt(final_attrs)))
+
+        output.append('<script type="text/javascript">')
+        output.append('(function($) {')
+        output.append('if (typeof AutocompleteSearch != "undefined") {')
+        output.append('new AutocompleteSearch("%(source)s", "%(id_)s", "%(name)s", "%(title)s").init();' % dict(
+            source=self.model.autocomplete.path,
+            name=final_attrs['name'],
+            title=title,
+            id_=final_attrs['id']))
+        output.append('}')
+        output.append('}(jQuery));')
+        output.append('</script>')
+
+        return mark_safe('\n'.join(output))
+
+
 class AutocompleteSelectWidget(forms.Select):
     """
     A autocomplete select widget to replace dropdown foreign key select widget
@@ -42,6 +96,8 @@ class AutocompleteSelectWidget(forms.Select):
         >>> autocomplete = AutocompleteSelectWidget()
         >>> autocomplete
         <django_autocomplete.widgets.AutocompleteSelectWidget object at ...>
+
+        >>> print(dir(autocomplete))
 
     Renders with input field and bootstrap modal
 
@@ -57,8 +113,8 @@ class AutocompleteSelectWidget(forms.Select):
                placeholder="Search test models ..." style="display:inline-block" type="text" />
         <script type="text/javascript">
           (function($) {
-            if (window.AutocompleteSearch != undefined) {
-              AutocompleteSearch.init("id_fkm", "fkm", "test models");
+            if (window.AutocompleteSelect != undefined) {
+              new AutocompleteSelect("id_fkm", "fkm", "test models").init();
             }
           }(jQuery));
         </script>
@@ -69,6 +125,7 @@ class AutocompleteSelectWidget(forms.Select):
 
     class Media:
         js = (
+            settings.STATIC_URL + 'js/autocomplete_base.js',
             settings.STATIC_URL + 'js/autocomplete_select.js',
             )
         css = {
@@ -112,8 +169,9 @@ class AutocompleteSelectWidget(forms.Select):
             final_attrs['value'] = force_text(self._format_value(str_value))
         final_attrs['class'] = 'autocomplete-select form-control'
         final_attrs['style'] = 'display:inline-block'
+        final_attrs['data-source'] = model.autocomplete.path
         final_attrs['placeholder'] = str(_('Search ')) + str(title) + ' ...'
-
+        final_attrs['id'] = 'id_%s' % final_attrs['name']
         output = []
         output.append(
             '<input id="%(name)s_select" type="hidden" name="%(name)s_select" value="%(value)s">' % dict(
@@ -124,8 +182,9 @@ class AutocompleteSelectWidget(forms.Select):
         if '__prefix__' not in name:
             output.append('<script type="text/javascript">')
             output.append('(function($) {')
-            output.append('if (window.AutocompleteSearch != undefined) {')
-            output.append('AutocompleteSearch.init("%(id_)s", "%(name)s", "%(title)s");' % dict(
+            output.append('if (typeof AutocompleteSelect != "undefined") {')
+            output.append('new AutocompleteSelect("%(source)s", "%(id_)s", "%(name)s", "%(title)s").init();' % dict(
+                source=model.autocomplete.path,
                 name=name,
                 title=title,
                 id_=final_attrs['id']))
@@ -166,8 +225,8 @@ class AutocompleteSelectMultipleWidget(forms.SelectMultiple):
         </select>
           <script type="text/javascript">
           (function($) {
-          if (window.AutocompleteMultipleSearch != undefined) {
-          AutocompleteMultipleSearch.init("id_fkm", "fkm", "test models");
+          if (window.AutocompleteMultipleSelect != undefined) {
+          new AutocompleteMultipleSelect("id_fkm", "fkm", "test models").init();
           }
           }(jQuery));
         </script>
@@ -177,6 +236,7 @@ class AutocompleteSelectMultipleWidget(forms.SelectMultiple):
 
     class Media:
         js = (
+            settings.STATIC_URL + 'js/autocomplete_base.js',
             settings.STATIC_URL + 'js/autocomplete_multipleselect.js',
             )
         css = {
@@ -228,6 +288,8 @@ class AutocompleteSelectMultipleWidget(forms.SelectMultiple):
         if 'title' in final_attrs:
             del final_attrs['title']
         final_attrs['class'] = 'autocomplete-multipleselect form-control'
+        final_attrs['data-source'] = model.autocomplete.path
+        final_attrs['id'] = 'id_%s' % final_attrs['name']
         output.append(format_html('<select multiple="multiple"{0}>', flatatt(final_attrs)))
         options = self.render_options(choices, value)
         if options:
@@ -238,11 +300,13 @@ class AutocompleteSelectMultipleWidget(forms.SelectMultiple):
         if '__prefix__' not in name:
             output.append('<script type="text/javascript">')
             output.append('(function($) {')
-            output.append('if (window.AutocompleteMultipleSearch != undefined) {')
-            output.append('AutocompleteMultipleSearch.init("%(id_)s", "%(name)s", "%(title)s");' % dict(
-                name=name,
-                title=verbose_name_plural,
-                id_=final_attrs['id']))
+            output.append('if (window.AutocompleteMultipleSelect != undefined) {')
+            output.append(
+                'new AutocompleteMultipleSelect("%(source)s", "%(id_)s", "%(name)s", "%(title)s").init();' % dict(
+                    source=model.autocomplete.path,
+                    name=name,
+                    title=verbose_name_plural.capitalize(),
+                    id_=final_attrs['id']))
             output.append('}')
             output.append('}(jQuery));')
             output.append('</script>')
