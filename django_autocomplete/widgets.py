@@ -36,21 +36,36 @@ class SmallTextareaWidget(forms.Textarea):
 
 class SearchInput(forms.TextInput):
     """
-    <form class="navbar-form navbar-right" role="search" id="changelist-search" action="" method="get">
-      <div class="form-group">
-        <input type="text" class="form-control search-query" placeholder="{% trans 'Search' %}" size="40"
-               name="{{ search_var }}" value="{{ cl.query }}" id="searchbar" />
-      </div>
-    </form>
+    The SearchInput widget::
+
+        >>> autocomplete = AutocompleteSelectWidget()
+        >>> autocomplete
+        <django_autocomplete.widgets.AutocompleteSelectWidget object at ...>
+
+    Renders with input field and javascipt initialization::
+
+        >>> from django.forms import CharField
+        >>> field = forms.CharField(widget=SearchInput(model=TestModel))
+        >>> result = field.widget.render('q', None, attrs=dict(id='id_q'))
+        >>> for line in result.split('\\n'):
+        ...     print(line)
+        <input ... id="id_q" name="q" placeholder="Search Test models ..." size="40" type="text" />
+        <script type="text/javascript">
+          (function($) {
+            if (typeof AutocompleteSearch != "undefined") {
+              new AutocompleteSearch("api/filter/silly", "id_q", "q", "Test models").init();
+            }
+          }(jQuery));
+        </script>
 
     """
     class Media:
         js = (
-            settings.STATIC_URL + 'js/autocomplete_base.js',
-            settings.STATIC_URL + 'js/autocomplete_search.js',
+            settings.STATIC_URL + 'django_autocomplete/js/autocomplete_base.js',
+            settings.STATIC_URL + 'django_autocomplete/js/autocomplete_search.js',
             )
         css = {
-            'screen': (settings.STATIC_URL + 'css/autocomplete.css', )
+            'screen': (settings.STATIC_URL + 'django_autocomplete/css/autocomplete.css', )
             }
 
     def __init__(self, attrs=None, model=None):
@@ -97,8 +112,6 @@ class AutocompleteSelectWidget(forms.Select):
         >>> autocomplete
         <django_autocomplete.widgets.AutocompleteSelectWidget object at ...>
 
-        >>> print(dir(autocomplete))
-
     Renders with input field and bootstrap modal
 
         >>> from django.forms import ModelChoiceField
@@ -109,12 +122,11 @@ class AutocompleteSelectWidget(forms.Select):
         >>> for line in result.split('\\n'):
         ...     print(line)
         <input id="fkm_select" type="hidden" name="fkm_select" value="">
-        <input class="autocomplete-select form-control" id="id_fkm" name="fkm"\
-               placeholder="Search test models ..." style="display:inline-block" type="text" />
+        <input ... data-source="api/filter/silly" id="id_fkm" name="fkm" ... type="text" />
         <script type="text/javascript">
           (function($) {
-            if (window.AutocompleteSelect != undefined) {
-              new AutocompleteSelect("id_fkm", "fkm", "test models").init();
+            if (typeof AutocompleteSelect != "undefined") {
+              new AutocompleteSelect("api/filter/silly", "id_fkm", "fkm", "test models").init();
             }
           }(jQuery));
         </script>
@@ -125,11 +137,12 @@ class AutocompleteSelectWidget(forms.Select):
 
     class Media:
         js = (
-            settings.STATIC_URL + 'js/autocomplete_base.js',
-            settings.STATIC_URL + 'js/autocomplete_select.js',
+            settings.STATIC_URL + 'django_autocomplete/js/autocomplete_base.js',
+            settings.STATIC_URL + 'django_autocomplete/js/autocomplete_select.js',
+            settings.STATIC_URL + 'admin/js/RelatedObjectLookupsNG.js',
             )
         css = {
-            'screen': (settings.STATIC_URL + 'css/autocomplete.css', )
+            'screen': (settings.STATIC_URL + 'django_autocomplete/css/autocomplete.css', )
             }
 
     def _format_value(self, value):
@@ -215,19 +228,19 @@ class AutocompleteSelectMultipleWidget(forms.SelectMultiple):
         >>> for line in result.split('\\n'):
         ...     print(line)
         <div class="btn-group">
-          <button class="btn btn-default" role="button" id="add_fkm">
+            <button class="btn btn-default" role="button" id="add_fkm">
             Add test model</button>
-          <button class="btn btn-default disabled" role="button" id="remove_fkm">
+            <button class="btn btn-default disabled" role="button" id="remove_fkm">
             Remove selected</button>
         </div>
         <div class="control-group">&nbsp;</div>
-        <select multiple="multiple" class="autocomplete-multipleselect form-control" id="id_fkm" name="fkm">
+        <select multiple="multiple" ... data-source="api/filter/silly" id="id_fkm" name="fkm">
         </select>
-          <script type="text/javascript">
+        <script type="text/javascript">
           (function($) {
-          if (window.AutocompleteMultipleSelect != undefined) {
-          new AutocompleteMultipleSelect("id_fkm", "fkm", "test models").init();
-          }
+            if (window.AutocompleteMultipleSelect != undefined) {
+              new AutocompleteMultipleSelect("api/filter/silly", "id_fkm", "fkm", "Test models").init();
+            }
           }(jQuery));
         </script>
 
@@ -236,11 +249,11 @@ class AutocompleteSelectMultipleWidget(forms.SelectMultiple):
 
     class Media:
         js = (
-            settings.STATIC_URL + 'js/autocomplete_base.js',
-            settings.STATIC_URL + 'js/autocomplete_multipleselect.js',
+            settings.STATIC_URL + 'django_autocomplete/js/autocomplete_base.js',
+            settings.STATIC_URL + 'django_autocomplete/js/autocomplete_multipleselect.js',
             )
         css = {
-            'screen': (settings.STATIC_URL + 'css/autocomplete.css', )
+            'screen': (settings.STATIC_URL + 'django_autocomplete/css/autocomplete.css', )
             }
 
     def value_from_datadict(self, data, files, name):

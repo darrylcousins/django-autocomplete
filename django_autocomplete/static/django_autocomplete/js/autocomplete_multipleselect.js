@@ -21,15 +21,15 @@
     this.initBase();
 
     // a button to trigger the autocomplete search
-    var add_button = $('#add_' + this.field_name);
-    this.setTrigger(add_button, 'click');
+    this.add_button = $('#add_' + this.field_name);
+    this.setTrigger(this.add_button, 'click');
     //
     // the select field that is targeted.
     this.select_field = $('select#' + this.field_id)
 
     // a button to remove elements from selected field
-    var remove_button = $('#remove_' + this.field_name);
-    $(remove_button).click(
+    this.remove_button = $('#remove_' + this.field_name);
+    $(this.remove_button).click(
       {obj: this},
       function(event) {
         var obj = event.data.obj;

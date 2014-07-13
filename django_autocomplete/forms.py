@@ -9,6 +9,9 @@ from .widgets import SearchInput
 
 
 class SearchFormMetaclass(DeclarativeFieldsMetaclass):
+    """
+    The search form meta class ensures the form has a model.
+    """
     def __new__(mcs, name, bases, attrs):
         new_class = super(SearchFormMetaclass, mcs).__new__(mcs, name, bases, attrs)
         new_class.opts = new_class._meta = ModelFormOptions(getattr(new_class, 'Meta', None))
@@ -20,6 +23,9 @@ class SearchFormMetaclass(DeclarativeFieldsMetaclass):
 
 
 class SearchForm(with_metaclass(SearchFormMetaclass, BaseForm)):
+    """
+    A simple search form which used the autocomplete SearchInput widget.
+    """
     q = forms.CharField(widget=SearchInput)
 
     class Meta:

@@ -11,12 +11,14 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   javascript
    widgets
    meta
    urls
    views
+   forms
 
-.. include:: ../../README.md
+.. include:: ../../README.rst
 
 Indices and tables
 ==================
