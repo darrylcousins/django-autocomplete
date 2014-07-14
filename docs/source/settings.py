@@ -4,17 +4,14 @@ INSTALLED_APPS=(
     'django.contrib.auth',
     'django_autocomplete',
     'django_autocomplete.tests',
-    ),
+    )
 DATABASES={
     "default": {
         "ENGINE": "django.db.backends.sqlite3"
         }
-    },
-SECRET_KEY='#',
-STATIC_URL = '/static/',
-MIDDLEWARE_CLASSES=(
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    ),
-ROOT_URLCONF = 'django_autocomplete.tests.urls'
+    }
+SITE_ID = 303
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+SECRET_KEY='#'
 
