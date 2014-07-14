@@ -6,6 +6,9 @@ Autocomplete for django models. Form widgets and admin integration examples.
 Requirements
 ------------
 
+-  Django ``>=1.7.x``.
+-  Python ``3``
+
 For the widgets bootstrap3 is required django-bootstrap3_ is a good option. To
 use the widgets in the admin then bootstrapped3_ admin will be useful.
 
