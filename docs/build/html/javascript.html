@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Javascript &mdash; Django Autocomplete 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Autocomplete 0.1 documentation" href="index.html" />
+    <link rel="next" title="Widgets" href="widgets.html" />
+    <link rel="prev" title="Welcome to Django Autocomplete’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="widgets.html" title="Widgets"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Django Autocomplete’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="javascript">
+<h1>Javascript<a class="headerlink" href="#javascript" title="Permalink to this headline">¶</a></h1>
+<p>The module has a base javascript file <tt class="docutils literal"><span class="pre">autocomplete_base</span></tt> and each widget then extends that in the following files:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">django_autocomplete</span><span class="o">/</span><span class="n">static</span><span class="o">/</span><span class="n">js</span><span class="o">/</span><span class="n">autocomplete_select</span><span class="o">.</span><span class="n">js</span>
+<span class="n">django_autocomplete</span><span class="o">/</span><span class="n">static</span><span class="o">/</span><span class="n">js</span><span class="o">/</span><span class="n">autocomplete_multipleselect</span><span class="o">.</span><span class="n">js</span>
+<span class="n">django_autocomplete</span><span class="o">/</span><span class="n">static</span><span class="o">/</span><span class="n">js</span><span class="o">/</span><span class="n">autocomplete_search</span><span class="o">.</span><span class="n">js</span>
+</pre></div>
+</div>
+<p>The base describes a javascript object: <tt class="docutils literal"><span class="pre">AutocompleteBase</span></tt>. This can be extended by prototypal inheritance.</p>
+<p>Lets say we want to make our own search widget. The html required will have a
+button as a trigger and some javascript to initialize the search:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;input id=&quot;find&quot; placeholder=&quot;find something&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+  (function($) {
+    if (window.AutocompleteExt != undefined) {
+      new AutocompleteExt(&quot;path/to/api&quot;, id_find&quot;, &quot;find&quot;, &quot;Find something&quot;).init();
+    }
+  }(jQuery));
+&lt;/script&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unlike the widgets the javascript is agnostic to the form, and only
+cares about the url path to the api. Jquery will call this url with the query
+string <tt class="docutils literal"><span class="pre">term=&lt;entered&gt;</span></tt>.</p>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">AutocompleteExt</span></tt> object needs to be defined, first the constructor:</p>
+<div class="highlight-python"><div class="highlight"><pre>window.AutocompleteSearch = function(source, field_id, field_name, field_title) {
+  this.source = source;
+  this.field_id = field_id;
+  this.field_name = field_name;
+  this.field_title = field_title;
+}
+</pre></div>
+</div>
+<p>This just repeats the <tt class="docutils literal"><span class="pre">AuotcompleteBase</span></tt> constructor. We then declare the new
+object prototype to be that of <tt class="docutils literal"><span class="pre">AutocompleteBase</span></tt> so it inherits the methods of
+the base:</p>
+<div class="highlight-python"><div class="highlight"><pre>AutocompleteSearch.prototype = new AutocompleteBase();
+</pre></div>
+</div>
+<p>But it needs to use its own constructor (otherwise we get a base object):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">AutocompleteSearch</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">constructor</span> <span class="o">=</span> <span class="n">AutocompleteSearch</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Then we must declare its <tt class="docutils literal"><span class="pre">init</span></tt> method, this is described line by line below:</p>
+<div class="highlight-python"><div class="highlight"><pre>AutocompleteSearch.prototype.init = function() {
+</pre></div>
+</div>
+<p>Init the base object, this adds the modal to the <tt class="docutils literal"><span class="pre">dom</span></tt> and initializes some attributes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">this</span><span class="o">.</span><span class="n">initBase</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Locate the dom object that will be the trigger to open the modal:</p>
+<div class="highlight-python"><div class="highlight"><pre>this.trigger = $(&#39;#&#39; + this.field_id);
+</pre></div>
+</div>
+<p>And set this as the trigger on the event <tt class="docutils literal"><span class="pre">focus</span></tt>, not this could be any event, e.g. <tt class="docutils literal"><span class="pre">click</span></tt> on a button:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">this</span><span class="o">.</span><span class="n">setTrigger</span><span class="p">(</span><span class="n">this</span><span class="o">.</span><span class="n">trigger</span><span class="p">,</span> <span class="s">&#39;focus&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Any other setup could take place here - see as an example <tt class="docutils literal"><span class="pre">autocomplete_multipleselect.js</span></tt>.</p>
+</div>
+<p>The next command declares the jqueryui autocomplete plugin on the input field of the modal.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The input field in the modal is available as <tt class="docutils literal"><span class="pre">this.input</span></tt>.</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">this</span><span class="o">.</span><span class="n">initAutocomplete</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then bind the select action of the autocomplete.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is not declared in <tt class="docutils literal"><span class="pre">AutocompleteBase</span></tt> and gives the
+developer freedom to declare what happens when a result is returned from the server.</p>
+</div>
+<p>Call the method that we declare below:</p>
+<div class="highlight-python"><div class="highlight"><pre>this.bindAutocomplete() // end init
+</pre></div>
+</div>
+<p>In this example all that happens is that the input field receives the value of the label.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The AutocompleteExt is passed with the event and is available as <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>AutocompleteExt.prototype.bindAutocomplete = function() {
+
+  // and add the action on select of item
+  $(this.input).bind( &quot;autocompleteselect&quot;,
+    {obj: this},
+    function(event, ui) {
+      var obj = event.data.obj;
+      if (ui.item) {
+        // do something
+        $(obj.trigger).attr(&#39;value&#39;, ui.item.label )
+        $(obj.modal).modal(&#39;hide&#39;);
+      } else {
+        alert(&quot;Nothing selected, input was &quot; + this.value );
+      }
+      event.preventDefault();
+      return false;
+    })
+  }
+</pre></div>
+</div>
+<p>Hope that helps.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Django Autocomplete&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="widgets.html"
+                        title="next chapter">Widgets</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/javascript.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="widgets.html" title="Widgets"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Django Autocomplete’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Darryl Cousins.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

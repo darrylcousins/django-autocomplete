@@ -1,0 +1,453 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Widgets &mdash; Django Autocomplete 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Autocomplete 0.1 documentation" href="index.html" />
+    <link rel="next" title="Meta" href="meta.html" />
+    <link rel="prev" title="Javascript" href="javascript.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="meta.html" title="Meta"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="javascript.html" title="Javascript"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="widgets">
+<h1>Widgets<a class="headerlink" href="#widgets" title="Permalink to this headline">¶</a></h1>
+<p>The autocomplete widgets include a select and mulitple select widgets.</p>
+<span class="target" id="module-django_autocomplete.widgets"></span><dl class="class">
+<dt id="django_autocomplete.widgets.AutocompleteCTWidget">
+<em class="property">class </em><tt class="descclassname">django_autocomplete.widgets.</tt><tt class="descname">AutocompleteCTWidget</tt><big>(</big><em>attrs=None</em>, <em>choices=()</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteCTWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteCTWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.forms.widgets.Select</span></tt></p>
+<p>A autocomplete select widget to handle generec content types
+for admin screens.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">autocomplete</span> <span class="o">=</span> <span class="n">AutocompleteCTWidget</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">autocomplete</span>
+<span class="go">&lt;django_autocomplete.widgets.AutocompleteCTWidget object at ...&gt;</span>
+</pre></div>
+</div>
+<p>Renders with input field and bootstrap modal</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.contrib.contenttypes.models</span> <span class="kn">import</span> <span class="n">ContentType</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.forms</span> <span class="kn">import</span> <span class="n">ModelChoiceField</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queryset</span> <span class="o">=</span> <span class="n">ContentType</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()[:</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">field</span> <span class="o">=</span> <span class="n">ModelChoiceField</span><span class="p">(</span><span class="n">queryset</span><span class="o">=</span><span class="n">queryset</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">widget</span><span class="o">=</span><span class="n">AutocompleteCTWidget</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s">&#39;fkm&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">&#39;id_fkm&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="go">&lt;select id=&quot;id_fkm&quot; name=&quot;fkm&quot;&gt;</span>
+<span class="go">&lt;option value=&quot;&quot; selected=&quot;selected&quot;&gt;---------&lt;/option&gt;</span>
+<span class="go">&lt;option value=&quot;...&quot;&gt;...&lt;/option&gt;</span>
+<span class="go">&lt;option value=&quot;...&quot;&gt;...&lt;/option&gt;</span>
+<span class="go">&lt;/select&gt;</span>
+</pre></div>
+</div>
+<p>A simple select is shown as for normal select widget. This is because the
+widget cannot use autocomplete unless all the models have an autocomplete
+attribute.</p>
+<p>Again then with queryset restricted to model with autocomplete:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">queryset</span> <span class="o">=</span> <span class="n">ContentType</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;test model&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">field</span> <span class="o">=</span> <span class="n">ModelChoiceField</span><span class="p">(</span><span class="n">queryset</span><span class="o">=</span><span class="n">queryset</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">widget</span><span class="o">=</span><span class="n">AutocompleteCTWidget</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s">&#39;fkm&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">&#39;id_fkm&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="go">&lt;select id=&quot;id_fkm&quot; name=&quot;fkm&quot;&gt;</span>
+<span class="go">  &lt;option value=&quot;&quot; selected=&quot;selected&quot;&gt;---------&lt;/option&gt;</span>
+<span class="go">  &lt;option value=&quot;...&quot;&gt;test model&lt;/option&gt;</span>
+<span class="go">&lt;/select&gt;</span>
+<span class="go">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="go">  var SourceDict = {};</span>
+<span class="go">  SourceDict[&quot;...&quot;] = &quot;api/filter/silly&quot;;</span>
+<span class="go">  (function($) {</span>
+<span class="go">    if (window.AutocompleteCTSelect != undefined) {</span>
+<span class="go">      $(&quot;#id_fkm&quot;).change(</span>
+<span class="go">        function() {</span>
+<span class="go">          var ctname = $(this).find(&quot;option:selected&quot;).html();</span>
+<span class="go">          var ctpk = $(this).val();</span>
+<span class="go">          var source = SourceDict[ctpk];</span>
+<span class="go">          $(&quot;#object_id_info&quot;).html(&quot;Searching &quot; + ctname + &quot; ...&quot;);</span>
+<span class="go">          new AutocompleteCTSelect(source, &quot;id_object_id&quot;, &quot;object_id&quot;, ctname).init();</span>
+<span class="go">        })</span>
+<span class="go">        $(document).ready(function() {</span>
+<span class="go">          $(&#39;&lt;span class=&quot;text-muted&quot; id=&quot;object_id_info&quot;&gt;&lt;/span&gt;&#39;).insertAfter(&quot;#id_object_id&quot;)</span>
+<span class="go">        })</span>
+<span class="go">    }</span>
+<span class="go">  }(jQuery));</span>
+<span class="go">&lt;/script&gt;</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="django_autocomplete.widgets.AutocompleteCTWidget.Media">
+<em class="property">class </em><tt class="descname">Media</tt><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteCTWidget.Media"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteCTWidget.Media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteCTWidget.Media.css">
+<tt class="descname">css</tt><em class="property"> = {'screen': ('/static/django_autocomplete/css/autocomplete.css',)}</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteCTWidget.Media.css" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteCTWidget.Media.js">
+<tt class="descname">js</tt><em class="property"> = ('/static/django_autocomplete/js/autocomplete_base.js', '/static/django_autocomplete/js/autocomplete_ct_select.js')</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteCTWidget.Media.js" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteCTWidget.allow_multiple_selected">
+<tt class="descclassname">AutocompleteCTWidget.</tt><tt class="descname">allow_multiple_selected</tt><em class="property"> = False</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteCTWidget.allow_multiple_selected" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteCTWidget.media">
+<tt class="descclassname">AutocompleteCTWidget.</tt><tt class="descname">media</tt><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteCTWidget.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteCTWidget.object_field">
+<tt class="descclassname">AutocompleteCTWidget.</tt><tt class="descname">object_field</tt><em class="property"> = 'object_id'</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteCTWidget.object_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.widgets.AutocompleteCTWidget.render">
+<tt class="descclassname">AutocompleteCTWidget.</tt><tt class="descname">render</tt><big>(</big><em>name</em>, <em>value</em>, <em>attrs=None</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteCTWidget.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteCTWidget.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="django_autocomplete.widgets.AutocompleteSelectMultipleWidget">
+<em class="property">class </em><tt class="descclassname">django_autocomplete.widgets.</tt><tt class="descname">AutocompleteSelectMultipleWidget</tt><big>(</big><em>attrs=None</em>, <em>choices=()</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteSelectMultipleWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectMultipleWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.forms.widgets.SelectMultiple</span></tt></p>
+<p>A autocomplete select widget to replace dropdown foreign key select widget
+for admin screens.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">autocomplete</span> <span class="o">=</span> <span class="n">AutocompleteSelectMultipleWidget</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">autocomplete</span>
+<span class="go">&lt;django_autocomplete.widgets.AutocompleteSelectMultipleWidget object at ...&gt;</span>
+</pre></div>
+</div>
+<p>Renders with input field and javascript</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.forms</span> <span class="kn">import</span> <span class="n">ModelChoiceField</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queryset</span> <span class="o">=</span> <span class="n">TestModel</span><span class="o">.</span><span class="n">fkm</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">field</span> <span class="o">=</span> <span class="n">ModelChoiceField</span><span class="p">(</span><span class="n">queryset</span><span class="o">=</span><span class="n">queryset</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">widget</span><span class="o">=</span><span class="n">AutocompleteSelectMultipleWidget</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s">&#39;fkm&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="n">attrs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">&#39;id_fkm&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;M2m&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="go">&lt;div class=&quot;btn-group&quot;&gt;</span>
+<span class="go">    &lt;button class=&quot;btn btn-default&quot; role=&quot;button&quot; id=&quot;add_fkm&quot;&gt;</span>
+<span class="go">    Add test model&lt;/button&gt;</span>
+<span class="go">    &lt;button class=&quot;btn btn-default disabled&quot; role=&quot;button&quot; id=&quot;remove_fkm&quot;&gt;</span>
+<span class="go">    Remove selected&lt;/button&gt;</span>
+<span class="go">&lt;/div&gt;</span>
+<span class="go">&lt;div class=&quot;control-group&quot;&gt;&amp;nbsp;&lt;/div&gt;</span>
+<span class="go">&lt;select multiple=&quot;multiple&quot; ... data-source=&quot;api/filter/silly&quot; id=&quot;id_fkm&quot; name=&quot;fkm&quot;&gt;</span>
+<span class="go">&lt;/select&gt;</span>
+<span class="go">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="go">  (function($) {</span>
+<span class="go">    if (window.AutocompleteMultipleSelect != undefined) {</span>
+<span class="go">      new AutocompleteMultipleSelect(&quot;api/filter/silly&quot;, &quot;id_fkm&quot;, &quot;fkm&quot;, &quot;Test models&quot;).init();</span>
+<span class="go">    }</span>
+<span class="go">  }(jQuery));</span>
+<span class="go">&lt;/script&gt;</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="django_autocomplete.widgets.AutocompleteSelectMultipleWidget.Media">
+<em class="property">class </em><tt class="descname">Media</tt><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteSelectMultipleWidget.Media"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectMultipleWidget.Media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteSelectMultipleWidget.Media.css">
+<tt class="descname">css</tt><em class="property"> = {'screen': ('/static/django_autocomplete/css/autocomplete.css',)}</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectMultipleWidget.Media.css" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteSelectMultipleWidget.Media.js">
+<tt class="descname">js</tt><em class="property"> = ('/static/django_autocomplete/js/autocomplete_base.js', '/static/django_autocomplete/js/autocomplete_multipleselect.js')</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectMultipleWidget.Media.js" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteSelectMultipleWidget.allow_multiple_selected">
+<tt class="descclassname">AutocompleteSelectMultipleWidget.</tt><tt class="descname">allow_multiple_selected</tt><em class="property"> = True</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectMultipleWidget.allow_multiple_selected" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteSelectMultipleWidget.media">
+<tt class="descclassname">AutocompleteSelectMultipleWidget.</tt><tt class="descname">media</tt><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectMultipleWidget.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.widgets.AutocompleteSelectMultipleWidget.render">
+<tt class="descclassname">AutocompleteSelectMultipleWidget.</tt><tt class="descname">render</tt><big>(</big><em>name</em>, <em>value</em>, <em>attrs=None</em>, <em>choices=()</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteSelectMultipleWidget.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectMultipleWidget.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.widgets.AutocompleteSelectMultipleWidget.render_options">
+<tt class="descclassname">AutocompleteSelectMultipleWidget.</tt><tt class="descname">render_options</tt><big>(</big><em>choices</em>, <em>selected_choices</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteSelectMultipleWidget.render_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectMultipleWidget.render_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.widgets.AutocompleteSelectMultipleWidget.value_from_datadict">
+<tt class="descclassname">AutocompleteSelectMultipleWidget.</tt><tt class="descname">value_from_datadict</tt><big>(</big><em>data</em>, <em>files</em>, <em>name</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteSelectMultipleWidget.value_from_datadict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectMultipleWidget.value_from_datadict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shouldn&#8217;t need to override this - make note if you do!!</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="django_autocomplete.widgets.AutocompleteSelectWidget">
+<em class="property">class </em><tt class="descclassname">django_autocomplete.widgets.</tt><tt class="descname">AutocompleteSelectWidget</tt><big>(</big><em>attrs=None</em>, <em>choices=()</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteSelectWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.forms.widgets.Select</span></tt></p>
+<p>A autocomplete select widget to replace dropdown foreign key select widget
+for admin screens.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">autocomplete</span> <span class="o">=</span> <span class="n">AutocompleteSelectWidget</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">autocomplete</span>
+<span class="go">&lt;django_autocomplete.widgets.AutocompleteSelectWidget object at ...&gt;</span>
+</pre></div>
+</div>
+<p>Renders with input field and bootstrap modal</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.forms</span> <span class="kn">import</span> <span class="n">ModelChoiceField</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queryset</span> <span class="o">=</span> <span class="n">TestModel</span><span class="o">.</span><span class="n">fkm</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">field</span> <span class="o">=</span> <span class="n">ModelChoiceField</span><span class="p">(</span><span class="n">queryset</span><span class="o">=</span><span class="n">queryset</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">widget</span><span class="o">=</span><span class="n">AutocompleteSelectWidget</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s">&#39;fkm&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">&#39;id_fkm&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="go">&lt;input id=&quot;fkm_select&quot; type=&quot;hidden&quot; name=&quot;fkm_select&quot; value=&quot;&quot;&gt;</span>
+<span class="go">&lt;input ... data-source=&quot;api/filter/silly&quot; id=&quot;id_fkm&quot; name=&quot;fkm&quot; ... type=&quot;text&quot; /&gt;</span>
+<span class="go">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="go">  (function($) {</span>
+<span class="go">    if (typeof AutocompleteSelect != &quot;undefined&quot;) {</span>
+<span class="go">      new AutocompleteSelect(&quot;api/filter/silly&quot;, &quot;id_fkm&quot;, &quot;fkm&quot;, &quot;test models&quot;).init();</span>
+<span class="go">    }</span>
+<span class="go">  }(jQuery));</span>
+<span class="go">&lt;/script&gt;</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="django_autocomplete.widgets.AutocompleteSelectWidget.Media">
+<em class="property">class </em><tt class="descname">Media</tt><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteSelectWidget.Media"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectWidget.Media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteSelectWidget.Media.css">
+<tt class="descname">css</tt><em class="property"> = {'screen': ('/static/django_autocomplete/css/autocomplete.css',)}</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectWidget.Media.css" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteSelectWidget.Media.js">
+<tt class="descname">js</tt><em class="property"> = ('/static/django_autocomplete/js/autocomplete_base.js', '/static/django_autocomplete/js/autocomplete_select.js', '/static/admin/js/RelatedObjectLookupsNG.js')</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectWidget.Media.js" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteSelectWidget.allow_multiple_selected">
+<tt class="descclassname">AutocompleteSelectWidget.</tt><tt class="descname">allow_multiple_selected</tt><em class="property"> = False</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectWidget.allow_multiple_selected" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteSelectWidget.input_type">
+<tt class="descclassname">AutocompleteSelectWidget.</tt><tt class="descname">input_type</tt><em class="property"> = 'text'</em><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectWidget.input_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.AutocompleteSelectWidget.media">
+<tt class="descclassname">AutocompleteSelectWidget.</tt><tt class="descname">media</tt><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectWidget.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.widgets.AutocompleteSelectWidget.render">
+<tt class="descclassname">AutocompleteSelectWidget.</tt><tt class="descname">render</tt><big>(</big><em>name</em>, <em>value</em>, <em>attrs={}</em>, <em>choices=()</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteSelectWidget.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectWidget.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders two input fields along with a modal and javascript.</p>
+<p>The hidden input holds the pk value of the fk and will be collected on
+submission of form.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.widgets.AutocompleteSelectWidget.value_from_datadict">
+<tt class="descclassname">AutocompleteSelectWidget.</tt><tt class="descname">value_from_datadict</tt><big>(</big><em>data</em>, <em>files</em>, <em>name</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#AutocompleteSelectWidget.value_from_datadict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.AutocompleteSelectWidget.value_from_datadict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a dictionary of data and this widget&#8217;s name, returns the value
+of it paired hidden field.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="django_autocomplete.widgets.SearchInput">
+<em class="property">class </em><tt class="descclassname">django_autocomplete.widgets.</tt><tt class="descname">SearchInput</tt><big>(</big><em>attrs=None</em>, <em>model=None</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#SearchInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.SearchInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.forms.widgets.TextInput</span></tt></p>
+<p>The SearchInput widget:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">autocomplete</span> <span class="o">=</span> <span class="n">AutocompleteSelectWidget</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">autocomplete</span>
+<span class="go">&lt;django_autocomplete.widgets.AutocompleteSelectWidget object at ...&gt;</span>
+</pre></div>
+</div>
+<p>Renders with input field and javascipt initialization:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.forms</span> <span class="kn">import</span> <span class="n">CharField</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">field</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">SearchInput</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">TestModel</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s">&#39;q&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">&#39;id_q&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="go">&lt;input ... id=&quot;id_q&quot; name=&quot;q&quot; placeholder=&quot;Search Test models ...&quot; size=&quot;40&quot; type=&quot;text&quot; /&gt;</span>
+<span class="go">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="go">  (function($) {</span>
+<span class="go">    if (typeof AutocompleteSearch != &quot;undefined&quot;) {</span>
+<span class="go">      new AutocompleteSearch(&quot;api/filter/silly&quot;, &quot;id_q&quot;, &quot;q&quot;, &quot;Test models&quot;).init();</span>
+<span class="go">    }</span>
+<span class="go">  }(jQuery));</span>
+<span class="go">&lt;/script&gt;</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="django_autocomplete.widgets.SearchInput.Media">
+<em class="property">class </em><tt class="descname">Media</tt><a class="reference internal" href="_modules/django_autocomplete/widgets.html#SearchInput.Media"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.SearchInput.Media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.SearchInput.Media.css">
+<tt class="descname">css</tt><em class="property"> = {'screen': ('/static/django_autocomplete/css/autocomplete.css',)}</em><a class="headerlink" href="#django_autocomplete.widgets.SearchInput.Media.css" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.SearchInput.Media.js">
+<tt class="descname">js</tt><em class="property"> = ('/static/django_autocomplete/js/autocomplete_base.js', '/static/django_autocomplete/js/autocomplete_search.js')</em><a class="headerlink" href="#django_autocomplete.widgets.SearchInput.Media.js" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.SearchInput.media">
+<tt class="descclassname">SearchInput.</tt><tt class="descname">media</tt><a class="headerlink" href="#django_autocomplete.widgets.SearchInput.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.widgets.SearchInput.render">
+<tt class="descclassname">SearchInput.</tt><tt class="descname">render</tt><big>(</big><em>name</em>, <em>value</em>, <em>attrs=None</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#SearchInput.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.SearchInput.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="django_autocomplete.widgets.SmallTextareaWidget">
+<em class="property">class </em><tt class="descclassname">django_autocomplete.widgets.</tt><tt class="descname">SmallTextareaWidget</tt><big>(</big><em>attrs=None</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/widgets.html#SmallTextareaWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.widgets.SmallTextareaWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.forms.widgets.Textarea</span></tt></p>
+<p>Use a smaller text area in the admin views.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">textarea</span> <span class="o">=</span> <span class="n">SmallTextareaWidget</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">textarea</span>
+<span class="go">&lt;django_autocomplete.widgets.SmallTextareaWidget object at ...&gt;</span>
+</pre></div>
+</div>
+<p>Renders with cols=20 and rows=4:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">textarea</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">)</span>
+<span class="go">&#39;&lt;textarea class=&quot;vTextField&quot; cols=&quot;20&quot;...rows=&quot;4&quot;&gt;...value&lt;/textarea&gt;&#39;</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="django_autocomplete.widgets.SmallTextareaWidget.media">
+<tt class="descname">media</tt><a class="headerlink" href="#django_autocomplete.widgets.SmallTextareaWidget.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="javascript.html"
+                        title="previous chapter">Javascript</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="meta.html"
+                        title="next chapter">Meta</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/widgets.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="meta.html" title="Meta"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="javascript.html" title="Javascript"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Darryl Cousins.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

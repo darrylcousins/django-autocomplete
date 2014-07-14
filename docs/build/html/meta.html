@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Meta &mdash; Django Autocomplete 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Autocomplete 0.1 documentation" href="index.html" />
+    <link rel="next" title="Urls" href="urls.html" />
+    <link rel="prev" title="Widgets" href="widgets.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="urls.html" title="Urls"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="widgets.html" title="Widgets"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="meta">
+<h1>Meta<a class="headerlink" href="#meta" title="Permalink to this headline">¶</a></h1>
+<p>The AutocompleteMeta object configures the autocomplete on a model level.</p>
+<span class="target" id="module-django_autocomplete.meta"></span><dl class="class">
+<dt id="django_autocomplete.meta.AutocompleteMeta">
+<em class="property">class </em><tt class="descclassname">django_autocomplete.meta.</tt><tt class="descname">AutocompleteMeta</tt><big>(</big><em>name</em>, <em>path</em>, <em>fields=</em>, <span class="optional">[</span><span class="optional">]</span><em>follow_fks=True</em>, <em>permissions=None</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/meta.html#AutocompleteMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.meta.AutocompleteMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<p>Simple meta class to allow the model to define aspects of the autocomplete.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> &#8211; used for the named url</li>
+<li><strong>path</strong> &#8211; the path to autocomplete view</li>
+<li><strong>follow_fks</strong> &#8211; when searching should ForeignKey fields be followed.</li>
+<li><strong>fields</strong> &#8211; list of fields, if empty then all searchable fields are used</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For example as a simple object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django_autocomplete.meta</span> <span class="kn">import</span> <span class="n">AutocompleteMeta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">TestModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">autocomplete</span> <span class="o">=</span> <span class="n">AutocompleteMeta</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">name</span><span class="o">=</span><span class="s">&#39;silly&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">path</span><span class="o">=</span><span class="s">&#39;api/filter/silly&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="p">)</span>
+</pre></div>
+</div>
+<p>The model autocomplete configures the model for use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">TestModel</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">autocomplete</span>
+<span class="go">&lt;django_autocomplete.meta.AutocompleteMeta object at 0x...&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">path</span>
+<span class="go">&#39;api/filter/silly&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;silly&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">follow_fks</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">fields</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="django_autocomplete.meta.AutocompleteMeta.fields">
+<tt class="descname">fields</tt><em class="property"> = []</em><a class="headerlink" href="#django_autocomplete.meta.AutocompleteMeta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.meta.AutocompleteMeta.follow_fks">
+<tt class="descname">follow_fks</tt><em class="property"> = True</em><a class="headerlink" href="#django_autocomplete.meta.AutocompleteMeta.follow_fks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.meta.AutocompleteMeta.name">
+<tt class="descname">name</tt><em class="property"> = ''</em><a class="headerlink" href="#django_autocomplete.meta.AutocompleteMeta.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.meta.AutocompleteMeta.path">
+<tt class="descname">path</tt><em class="property"> = ''</em><a class="headerlink" href="#django_autocomplete.meta.AutocompleteMeta.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.meta.AutocompleteMeta.permissions">
+<tt class="descname">permissions</tt><em class="property"> = None</em><a class="headerlink" href="#django_autocomplete.meta.AutocompleteMeta.permissions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="widgets.html"
+                        title="previous chapter">Widgets</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="urls.html"
+                        title="next chapter">Urls</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/meta.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="urls.html" title="Urls"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="widgets.html" title="Widgets"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Darryl Cousins.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

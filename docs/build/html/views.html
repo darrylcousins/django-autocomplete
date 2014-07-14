@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Django Autocomplete 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Autocomplete 0.1 documentation" href="index.html" />
+    <link rel="next" title="Forms" href="forms.html" />
+    <link rel="prev" title="Urls" href="urls.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="forms.html" title="Forms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="urls.html" title="Urls"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-django_autocomplete.views"></span><dl class="class">
+<dt id="django_autocomplete.views.AutocompleteView">
+<em class="property">class </em><tt class="descclassname">django_autocomplete.views.</tt><tt class="descname">AutocompleteView</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/views.html#AutocompleteView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.views.AutocompleteView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.views.generic.base.View</span></tt></p>
+<p>Simple json response view as backend support to the autocomplete form.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">AutocompleteView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">TestModel</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="django_autocomplete.views.AutocompleteView.convert_context_to_json">
+<tt class="descname">convert_context_to_json</tt><big>(</big><em>context</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/views.html#AutocompleteView.convert_context_to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.views.AutocompleteView.convert_context_to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does the work to convert context data to json.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">AutocompleteView</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="s">&#39;My marker&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="s">&#39;My marker&#39;</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">keys</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">convert_context_to_json</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">context</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">keys</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+<span class="go">[&#39;id&#39;, &#39;label&#39;, &#39;value&#39;]</span>
+</pre></div>
+</div>
+<p>Yes, looks the same, trust me, it is json.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.views.AutocompleteView.get">
+<tt class="descname">get</tt><big>(</big><em>request</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/views.html#AutocompleteView.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.views.AutocompleteView.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the dict response that will be serialized and returned:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">AutocompleteView</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">TestModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">request</span> <span class="o">=</span> <span class="n">request_factory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">request</span><span class="o">.</span><span class="n">GET</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;term&#39;</span><span class="p">:</span> <span class="s">&#39;blood&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">200</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">content</span>
+<span class="go">b&#39;[]&#39;</span>
+</pre></div>
+</div>
+<p>We can set permissions to <tt class="docutils literal"><span class="pre">True</span></tt> that the request user should be
+authenticated.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">TestModel</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">permissions</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">m</span>
+</pre></div>
+</div>
+<p>Create a user:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="s">&#39;member&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;member&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Unauthenticated user:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/api/filter/silly/?term=c&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">401</span>
+</pre></div>
+</div>
+<p>Authenticate:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">&#39;member&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;member&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/api/filter/silly/?term=c&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">200</span>
+</pre></div>
+</div>
+<p>Say we have a permission we want for our users:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">permissions</span> <span class="o">=</span> <span class="s">&#39;is_staff&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">m</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/api/filter/silly/?term=c&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">401</span>
+</pre></div>
+</div>
+<p>Create a staff user and try again:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">admin</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_superuser</span><span class="p">(</span><span class="s">&#39;admin&#39;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">&#39;admin@admin.org&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">admin</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s">&#39;admin&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;admin&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/api/filter/silly/?term=c&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">200</span>
+</pre></div>
+</div>
+<p>Permissions can be a list too:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">permissions</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;is_staff&#39;</span><span class="p">,</span> <span class="s">&#39;is_superuser&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">m</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/api/filter/silly/?term=c&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">200</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.views.AutocompleteView.get_context_data">
+<tt class="descname">get_context_data</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/views.html#AutocompleteView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.views.AutocompleteView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the dict response that will be serialized and returned:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">AutocompleteView</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">TestModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">request</span> <span class="o">=</span> <span class="n">request_factory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">request</span><span class="o">.</span><span class="n">GET</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;term&#39;</span><span class="p">:</span> <span class="s">&#39;blood&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>With the appropiate object in db it finds something to return.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">TestModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Silly model&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Dumb description&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">request</span><span class="o">.</span><span class="n">GET</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;term&#39;</span><span class="p">:</span> <span class="s">&#39;silly&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;label&#39;</span><span class="p">]</span>
+<span class="go">&#39;Silly model&#39;</span>
+</pre></div>
+</div>
+<p>All searchable fields are searched, e.g. the description here:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">request</span><span class="o">.</span><span class="n">GET</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;term&#39;</span><span class="p">:</span> <span class="s">&#39;dumb&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;label&#39;</span><span class="p">]</span>
+<span class="go">&#39;Silly model&#39;</span>
+</pre></div>
+</div>
+<p>Clean up.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.views.AutocompleteView.http_method_names">
+<tt class="descname">http_method_names</tt><em class="property"> = ['get']</em><a class="headerlink" href="#django_autocomplete.views.AutocompleteView.http_method_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.views.AutocompleteView.is_searchable_field">
+<tt class="descname">is_searchable_field</tt><big>(</big><em>field</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/views.html#AutocompleteView.is_searchable_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.views.AutocompleteView.is_searchable_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.views.AutocompleteView.model">
+<tt class="descname">model</tt><em class="property"> = None</em><a class="headerlink" href="#django_autocomplete.views.AutocompleteView.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.views.AutocompleteView.render_to_json_response">
+<tt class="descname">render_to_json_response</tt><big>(</big><em>context</em>, <em>**response_kwargs</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/views.html#AutocompleteView.render_to_json_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.views.AutocompleteView.render_to_json_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does the work to convert context data and return json response.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">AutocompleteView</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">TestModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="s">&#39;My marker&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="s">&#39;My marker&#39;</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">200</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.views.AutocompleteView.render_to_response">
+<tt class="descname">render_to_response</tt><big>(</big><em>context</em>, <em>**response_kwargs</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/views.html#AutocompleteView.render_to_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.views.AutocompleteView.render_to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override <tt class="xref py py-class docutils literal"><span class="pre">django.views.generic.base.View</span></tt> to return json response.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django_autocomplete.views.AutocompleteView.search">
+<tt class="descname">search</tt><big>(</big><em>queryset</em>, <em>terms</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/views.html#AutocompleteView.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.views.AutocompleteView.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search method. This can be overridden by giving the model manager a <tt class="docutils literal"><span class="pre">search</span></tt> method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>queryset</strong> &#8211; <tt class="xref py py-class docutils literal"><span class="pre">django.db.models.QuerySet</span></tt></li>
+<li><strong>terms</strong> &#8211; <table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">list:</th><td class="field-body">of strings</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the filtered <tt class="xref py py-class docutils literal"><span class="pre">django.db.modesls.QuerySet</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Searches all text fields</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">TestModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;My silly model&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s">&#39;a cool description&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">manager</span> <span class="o">=</span> <span class="n">TestModel</span><span class="o">.</span><span class="n">objects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queryset</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Verify that we have objects to search on:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">queryset</span>
+<span class="go">[&lt;TestModel: TestModel object&gt;]</span>
+</pre></div>
+</div>
+<p>Try a term that will fail:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">AutocompleteView</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">TestModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">queryset</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;empty&#39;</span><span class="p">])</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>And a term that will return:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">queryset</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;cool&#39;</span><span class="p">])</span>
+<span class="go">[&lt;TestModel: TestModel object&gt;]</span>
+</pre></div>
+</div>
+<p>The model has a <tt class="docutils literal"><span class="pre">autocomplete</span></tt> attribute that is an instance of 
+<a class="reference internal" href="meta.html#django_autocomplete.meta.AutocompleteMeta" title="django_autocomplete.meta.AutocompleteMeta"><tt class="xref py py-class docutils literal"><span class="pre">django_autocomplete.meta.AutocompleteMeta</span></tt></a>. The test model
+allows ForeignKey fields to be followed.</p>
+<p>Try a term that will follow the foreign key field and search in the related object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fkm</span> <span class="o">=</span> <span class="n">TestFKModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;My nice company&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s">&#39;a nice description&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fkm</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">fkm</span> <span class="o">=</span> <span class="n">fkm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">queryset</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;nice&#39;</span><span class="p">])</span>
+<span class="go">[&lt;TestModel: TestModel object&gt;]</span>
+</pre></div>
+</div>
+<p>Clean up.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fkm</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="urls.html"
+                        title="previous chapter">Urls</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="forms.html"
+                        title="next chapter">Forms</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/views.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="forms.html" title="Forms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="urls.html" title="Urls"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Darryl Cousins.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

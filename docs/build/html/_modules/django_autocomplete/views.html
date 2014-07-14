@@ -1,0 +1,476 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django_autocomplete.views &mdash; Django Autocomplete 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django Autocomplete 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for django_autocomplete.views</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">View</span>
+
+
+<div class="viewcode-block" id="AutocompleteView"><a class="viewcode-back" href="../../views.html#django_autocomplete.views.AutocompleteView">[docs]</a><span class="k">class</span> <span class="nc">AutocompleteView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple json response view as backend support to the autocomplete form.</span>
+
+<span class="sd">        &gt;&gt;&gt; view = AutocompleteView.as_view(model=TestModel)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">http_method_names</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;get&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="AutocompleteView.get"><a class="viewcode-back" href="../../views.html#django_autocomplete.views.AutocompleteView.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the dict response that will be serialized and returned:</span>
+
+<span class="sd">            &gt;&gt;&gt; view = AutocompleteView()</span>
+<span class="sd">            &gt;&gt;&gt; view.model = TestModel</span>
+<span class="sd">            &gt;&gt;&gt; request = request_factory.get(&#39;/&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; request.GET = {&#39;term&#39;: &#39;blood&#39;}</span>
+<span class="sd">            &gt;&gt;&gt; response = view.get(request)</span>
+<span class="sd">            &gt;&gt;&gt; response.status_code</span>
+<span class="sd">            200</span>
+<span class="sd">            &gt;&gt;&gt; response.content</span>
+<span class="sd">            b&#39;[]&#39;</span>
+
+<span class="sd">        We can set permissions to ``True`` that the request user should be</span>
+<span class="sd">        authenticated.</span>
+
+<span class="sd">            &gt;&gt;&gt; m = TestModel()</span>
+<span class="sd">            &gt;&gt;&gt; m.autocomplete.permissions = True</span>
+<span class="sd">            &gt;&gt;&gt; view.model = m</span>
+
+<span class="sd">        Create a user::</span>
+
+<span class="sd">            &gt;&gt;&gt; user = User.objects.create_user(&#39;member&#39;, password=&#39;member&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; user.save()</span>
+
+<span class="sd">        Unauthenticated user::</span>
+
+<span class="sd">            &gt;&gt;&gt; client = Client()</span>
+<span class="sd">            &gt;&gt;&gt; response = client.get(&#39;/api/filter/silly/?term=c&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; response.status_code</span>
+<span class="sd">            401</span>
+
+<span class="sd">        Authenticate::</span>
+
+<span class="sd">            &gt;&gt;&gt; client.login(username=&#39;member&#39;, password=&#39;member&#39;)</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; response = client.get(&#39;/api/filter/silly/?term=c&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; response.status_code</span>
+<span class="sd">            200</span>
+
+<span class="sd">        Say we have a permission we want for our users::</span>
+
+<span class="sd">            &gt;&gt;&gt; m.autocomplete.permissions = &#39;is_staff&#39;</span>
+<span class="sd">            &gt;&gt;&gt; view.model = m</span>
+<span class="sd">            &gt;&gt;&gt; response = client.get(&#39;/api/filter/silly/?term=c&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; response.status_code</span>
+<span class="sd">            401</span>
+
+<span class="sd">        Create a staff user and try again::</span>
+
+<span class="sd">            &gt;&gt;&gt; admin = User.objects.create_superuser(&#39;admin&#39;, email=&#39;admin@admin.org&#39;, password=&#39;admin&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; admin.save()</span>
+<span class="sd">            &gt;&gt;&gt; client.login(username=&#39;admin&#39;, password=&#39;admin&#39;)</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; response = client.get(&#39;/api/filter/silly/?term=c&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; response.status_code</span>
+<span class="sd">            200</span>
+
+<span class="sd">        Permissions can be a list too::</span>
+
+<span class="sd">            &gt;&gt;&gt; m.autocomplete.permissions = [&#39;is_staff&#39;, &#39;is_superuser&#39;]</span>
+<span class="sd">            &gt;&gt;&gt; view.model = m</span>
+<span class="sd">            &gt;&gt;&gt; response = client.get(&#39;/api/filter/silly/?term=c&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; response.status_code</span>
+<span class="sd">            200</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
+        <span class="n">perms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">permissions</span>
+        <span class="k">if</span> <span class="n">perms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&#39;Unauthorized&#39;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">perms</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">perms</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                    <span class="n">perms</span> <span class="o">=</span> <span class="p">[</span><span class="n">perms</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">has_perms</span><span class="p">(</span><span class="n">perms</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&#39;Unauthorized&#39;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+        <span class="c"># passed permissions</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AutocompleteView.get_context_data"><a class="viewcode-back" href="../../views.html#django_autocomplete.views.AutocompleteView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the dict response that will be serialized and returned:</span>
+
+<span class="sd">            &gt;&gt;&gt; view = AutocompleteView()</span>
+<span class="sd">            &gt;&gt;&gt; view.model = TestModel</span>
+<span class="sd">            &gt;&gt;&gt; request = request_factory.get(&#39;/&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; request.GET = {&#39;term&#39;: &#39;blood&#39;}</span>
+<span class="sd">            &gt;&gt;&gt; view.request = request</span>
+
+<span class="sd">            &gt;&gt;&gt; context = view.get_context_data()</span>
+<span class="sd">            &gt;&gt;&gt; print(context)</span>
+<span class="sd">            []</span>
+
+<span class="sd">        With the appropiate object in db it finds something to return.</span>
+
+<span class="sd">            &gt;&gt;&gt; m = TestModel(name=&#39;Silly model&#39;,</span>
+<span class="sd">            ...     description=&#39;Dumb description&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; m.save()</span>
+<span class="sd">            &gt;&gt;&gt; request.GET = {&#39;term&#39;: &#39;silly&#39;}</span>
+<span class="sd">            &gt;&gt;&gt; view.request = request</span>
+<span class="sd">            &gt;&gt;&gt; context = view.get_context_data()</span>
+<span class="sd">            &gt;&gt;&gt; len(context)</span>
+<span class="sd">            1</span>
+<span class="sd">            &gt;&gt;&gt; context[0][&#39;label&#39;]</span>
+<span class="sd">            &#39;Silly model&#39;</span>
+
+<span class="sd">        All searchable fields are searched, e.g. the description here:</span>
+
+<span class="sd">            &gt;&gt;&gt; request.GET = {&#39;term&#39;: &#39;dumb&#39;}</span>
+<span class="sd">            &gt;&gt;&gt; view.request = request</span>
+<span class="sd">            &gt;&gt;&gt; context = view.get_context_data()</span>
+<span class="sd">            &gt;&gt;&gt; len(context)</span>
+<span class="sd">            1</span>
+<span class="sd">            &gt;&gt;&gt; context[0][&#39;label&#39;]</span>
+<span class="sd">            &#39;Silly model&#39;</span>
+
+<span class="sd">        Clean up.</span>
+
+<span class="sd">            &gt;&gt;&gt; m.delete()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">term</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;term&#39;</span><span class="p">)</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">term</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">context</span>
+
+        <span class="c"># the developer can implement own search method</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="p">,</span> <span class="s">&#39;search&#39;</span><span class="p">):</span>
+            <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span>
+                <span class="p">[</span><span class="n">term</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+                <span class="p">[</span><span class="n">term</span><span class="p">])</span>
+
+        <span class="c"># find the first field to use as a label</span>
+        <span class="k">def</span> <span class="nf">fields</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_searchable_field</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">field</span>
+
+        <span class="n">label</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">fields</span><span class="p">())</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">queryset</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="n">_id</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="n">name</span>
+                <span class="p">))</span>
+        <span class="k">return</span> <span class="n">context</span>
+</div>
+<div class="viewcode-block" id="AutocompleteView.render_to_json_response"><a class="viewcode-back" href="../../views.html#django_autocomplete.views.AutocompleteView.render_to_json_response">[docs]</a>    <span class="k">def</span> <span class="nf">render_to_json_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">response_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Does the work to convert context data and return json response.</span>
+
+<span class="sd">            &gt;&gt;&gt; view = AutocompleteView()</span>
+<span class="sd">            &gt;&gt;&gt; view.model = TestModel</span>
+<span class="sd">            &gt;&gt;&gt; context = [{&#39;id&#39;: 1, &#39;label&#39;: &#39;My marker&#39;, &#39;value&#39;: &#39;My marker&#39;}]</span>
+<span class="sd">            &gt;&gt;&gt; response = view.render_to_response(context)</span>
+<span class="sd">            &gt;&gt;&gt; response.status_code</span>
+<span class="sd">            200</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_context_to_json</span><span class="p">(</span><span class="n">context</span><span class="p">),</span>
+            <span class="n">content_type</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">response_kwargs</span>
+            <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AutocompleteView.convert_context_to_json"><a class="viewcode-back" href="../../views.html#django_autocomplete.views.AutocompleteView.convert_context_to_json">[docs]</a>    <span class="k">def</span> <span class="nf">convert_context_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Does the work to convert context data to json.</span>
+
+<span class="sd">            &gt;&gt;&gt; view = AutocompleteView()</span>
+<span class="sd">            &gt;&gt;&gt; context = [{&#39;id&#39;: 1, &#39;label&#39;: &#39;My marker&#39;, &#39;value&#39;: &#39;My marker&#39;}]</span>
+<span class="sd">            &gt;&gt;&gt; keys = view.convert_context_to_json(context)</span>
+<span class="sd">            &gt;&gt;&gt; keys = list(context[0].keys())</span>
+<span class="sd">            &gt;&gt;&gt; keys.sort()</span>
+<span class="sd">            &gt;&gt;&gt; print(keys)</span>
+<span class="sd">            [&#39;id&#39;, &#39;label&#39;, &#39;value&#39;]</span>
+
+<span class="sd">        Yes, looks the same, trust me, it is json.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AutocompleteView.render_to_response"><a class="viewcode-back" href="../../views.html#django_autocomplete.views.AutocompleteView.render_to_response">[docs]</a>    <span class="k">def</span> <span class="nf">render_to_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">response_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override :class:`django.views.generic.base.View` to return json response.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_json_response</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">response_kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AutocompleteView.is_searchable_field"><a class="viewcode-back" href="../../views.html#django_autocomplete.views.AutocompleteView.is_searchable_field">[docs]</a>    <span class="k">def</span> <span class="nf">is_searchable_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="AutocompleteView.search"><a class="viewcode-back" href="../../views.html#django_autocomplete.views.AutocompleteView.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queryset</span><span class="p">,</span> <span class="n">terms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Search method. This can be overridden by giving the model manager a ``search`` method.</span>
+
+<span class="sd">        :arg queryset: :class:`django.db.models.QuerySet`</span>
+<span class="sd">        :arg terms:    :list: of strings</span>
+<span class="sd">        :returns:      the filtered :class:`django.db.modesls.QuerySet`</span>
+
+<span class="sd">        Searches all text fields</span>
+
+<span class="sd">           &gt;&gt;&gt; m = TestModel(name=&#39;My silly model&#39;,</span>
+<span class="sd">           ...     description=&#39;a cool description&#39;)</span>
+<span class="sd">           &gt;&gt;&gt; m.save()</span>
+
+<span class="sd">           &gt;&gt;&gt; manager = TestModel.objects</span>
+<span class="sd">           &gt;&gt;&gt; queryset = manager.all()</span>
+
+<span class="sd">        Verify that we have objects to search on::</span>
+
+<span class="sd">           &gt;&gt;&gt; queryset</span>
+<span class="sd">           [&lt;TestModel: TestModel object&gt;]</span>
+
+<span class="sd">        Try a term that will fail::</span>
+
+<span class="sd">           &gt;&gt;&gt; view = AutocompleteView()</span>
+<span class="sd">           &gt;&gt;&gt; view.model = TestModel</span>
+<span class="sd">           &gt;&gt;&gt; view.search(queryset, [&#39;empty&#39;])</span>
+<span class="sd">           []</span>
+
+<span class="sd">        And a term that will return::</span>
+
+<span class="sd">           &gt;&gt;&gt; view.search(queryset, [&#39;cool&#39;])</span>
+<span class="sd">           [&lt;TestModel: TestModel object&gt;]</span>
+
+
+<span class="sd">        The model has a ``autocomplete`` attribute that is an instance of </span>
+<span class="sd">        :class:`django_autocomplete.meta.AutocompleteMeta`. The test model</span>
+<span class="sd">        allows ForeignKey fields to be followed.</span>
+
+<span class="sd">        Try a term that will follow the foreign key field and search in the related object::</span>
+
+<span class="sd">            &gt;&gt;&gt; fkm = TestFKModel(name=&#39;My nice company&#39;,</span>
+<span class="sd">            ...     description=&#39;a nice description&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; fkm.save()</span>
+<span class="sd">            &gt;&gt;&gt; m.fkm = fkm</span>
+<span class="sd">            &gt;&gt;&gt; m.save()</span>
+<span class="sd">            &gt;&gt;&gt; view.search(queryset, [&#39;nice&#39;])</span>
+<span class="sd">            [&lt;TestModel: TestModel object&gt;]</span>
+
+<span class="sd">        Clean up.</span>
+
+<span class="sd">            &gt;&gt;&gt; m.delete()</span>
+<span class="sd">            &gt;&gt;&gt; fkm.delete()</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">terms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">term</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;search terms must be a string or list of strings, &quot;</span>
+                                <span class="s">&quot;not &#39;</span><span class="si">%s</span><span class="s">&#39;.&quot;</span> <span class="o">%</span> <span class="n">term</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+            <span class="n">term</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="c"># search all possible fields</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">fields</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_q</span><span class="p">(</span>
+                <span class="n">q</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span>
+                <span class="n">follow_fks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">autocomplete</span><span class="o">.</span><span class="n">follow_fks</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">queryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_construct_q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">follow_fks</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs a query following foreign key fields.</span>
+
+<span class="sd">        :arg q:      :class:`django.db.models.Q` object</span>
+<span class="sd">        :arg fields: :list: django model fields</span>
+<span class="sd">        :arg term:   :str: search term</span>
+<span class="sd">        :returns:    :class:`django.db.models.Q` object</span>
+
+<span class="sd">        Get the object manaager for an object that has fk fields.</span>
+
+<span class="sd">            &gt;&gt;&gt; view = AutocompleteView()</span>
+<span class="sd">            &gt;&gt;&gt; view.model = TestModel</span>
+
+<span class="sd">        Get the fields and check:</span>
+
+<span class="sd">            &gt;&gt;&gt; fields = TestModel._meta.fields</span>
+<span class="sd">            &gt;&gt;&gt; [field.name for field in fields]</span>
+<span class="sd">            [&#39;id&#39;, &#39;name&#39;, &#39;description&#39;, &#39;fkm&#39;]</span>
+
+<span class="sd">        Construct a query that spans all three objects:</span>
+
+<span class="sd">            &gt;&gt;&gt; q = view._construct_q(None, fields, &#39;silly_search&#39;, follow_fks=True)</span>
+
+<span class="sd">        The query is an *OR* query:</span>
+
+<span class="sd">            &gt;&gt;&gt; print(q)</span>
+<span class="sd">            (OR: (...))</span>
+
+<span class="sd">            &gt;&gt;&gt; print(&#39;\\n&#39;.join([str(child) for child in q.children]))</span>
+<span class="sd">            (&#39;name__icontains&#39;, &#39;silly_search&#39;)</span>
+<span class="sd">            (&#39;description__icontains&#39;, &#39;silly_search&#39;)</span>
+<span class="sd">            (&#39;fkm__name__icontains&#39;, &#39;silly_search&#39;)</span>
+<span class="sd">            (&#39;fkm__description__icontains&#39;, &#39;silly_search&#39;)</span>
+
+<span class="sd">        The method will also accept a list of field names and will look up the field by name:</span>
+
+<span class="sd">            &gt;&gt;&gt; fields = [&#39;name&#39;]</span>
+<span class="sd">            &gt;&gt;&gt; q = view._construct_q(None, fields, &#39;silly_search&#39;, follow_fks=False)</span>
+<span class="sd">            &gt;&gt;&gt; print(&#39;\\n&#39;.join([str(child) for child in q.children]))</span>
+<span class="sd">            (&#39;name__icontains&#39;, &#39;silly_search&#39;)</span>
+
+<span class="sd">        Unacceptable fields raise error:</span>
+
+<span class="sd">            &gt;&gt;&gt; fields = [&#39;nofield&#39;]</span>
+<span class="sd">            &gt;&gt;&gt; q = view._construct_q(None, fields, &#39;silly_search&#39;, follow_fks=False)</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            django.db.models.fields.FieldDoesNotExist: TestModel has no field named &#39;nofield&#39;</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="c"># may be passed a list of field names</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">Field</span><span class="p">):</span>
+                <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field_by_name</span><span class="p">(</span><span class="n">field</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">is_fk</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_searchable_field</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_fk</span><span class="p">:</span>
+                <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">__icontains&#39;</span> <span class="o">%</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">term</span><span class="p">}</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_query</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">is_fk</span> <span class="ow">and</span> <span class="n">follow_fks</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ifield</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_searchable_field</span><span class="p">(</span><span class="n">ifield</span><span class="p">):</span>
+                        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">__</span><span class="si">%s</span><span class="s">__icontains&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">ifield</span><span class="o">.</span><span class="n">name</span><span class="p">):</span> <span class="n">term</span><span class="p">}</span>
+                        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_query</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span>
+
+    <span class="k">def</span> <span class="nf">_start_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper method to ensure the validity of the Q objects in the chain of ``OR`` queries</span>
+
+<span class="sd">        :arg q:        :class:`django.db.models.Q` object or None</span>
+<span class="sd">        :arg kwargs: :dict: ``field name`` ``search term`` values</span>
+<span class="sd">        :returns:      :class:`django.db.models.Q` object</span>
+
+<span class="sd">        Something like:</span>
+
+<span class="sd">            &gt;&gt;&gt; view = AutocompleteView()</span>
+<span class="sd">            &gt;&gt;&gt; q = view._start_query(None, filter=&quot;filter&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; q = view._start_query(q, name=&quot;name&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; print(q)</span>
+<span class="sd">            (OR: (&#39;filter&#39;, &#39;filter&#39;), (&#39;name&#39;, &#39;name&#39;))</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Q</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span> <span class="o">|</span> <span class="n">models</span><span class="o">.</span><span class="n">Q</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Darryl Cousins.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

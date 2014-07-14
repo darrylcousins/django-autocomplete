@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Forms &mdash; Django Autocomplete 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Autocomplete 0.1 documentation" href="index.html" />
+    <link rel="prev" title="Views" href="views.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="views.html" title="Views"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="forms">
+<h1>Forms<a class="headerlink" href="#forms" title="Permalink to this headline">¶</a></h1>
+<p>The SearchForm uses <a href="#id1"><span class="problematic" id="id2">:model:`django_autocomplete.widgets.SearcInput`</span></a></p>
+<span class="target" id="module-django_autocomplete.forms"></span><dl class="class">
+<dt id="django_autocomplete.forms.SearchForm">
+<em class="property">class </em><tt class="descclassname">django_autocomplete.forms.</tt><tt class="descname">SearchForm</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/forms.html#SearchForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.forms.SearchForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.forms.forms.BaseForm</span></tt></p>
+<p>A simple search form which used the autocomplete SearchInput widget.</p>
+<dl class="class">
+<dt id="django_autocomplete.forms.SearchForm.Meta">
+<em class="property">class </em><tt class="descname">Meta</tt><a class="reference internal" href="_modules/django_autocomplete/forms.html#SearchForm.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.forms.SearchForm.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<dl class="attribute">
+<dt id="django_autocomplete.forms.SearchForm.Meta.model">
+<tt class="descname">model</tt><em class="property"> = None</em><a class="headerlink" href="#django_autocomplete.forms.SearchForm.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.forms.SearchForm.base_fields">
+<tt class="descclassname">SearchForm.</tt><tt class="descname">base_fields</tt><em class="property"> = OrderedDict([('q', &lt;django.forms.fields.CharField object at 0x1024fac88&gt;)])</em><a class="headerlink" href="#django_autocomplete.forms.SearchForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.forms.SearchForm.declared_fields">
+<tt class="descclassname">SearchForm.</tt><tt class="descname">declared_fields</tt><em class="property"> = OrderedDict([('q', &lt;django.forms.fields.CharField object at 0x1024fac88&gt;)])</em><a class="headerlink" href="#django_autocomplete.forms.SearchForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.forms.SearchForm.media">
+<tt class="descclassname">SearchForm.</tt><tt class="descname">media</tt><a class="headerlink" href="#django_autocomplete.forms.SearchForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="django_autocomplete.forms.SearchForm.opts">
+<tt class="descclassname">SearchForm.</tt><tt class="descname">opts</tt><em class="property"> = &lt;django.forms.models.ModelFormOptions object at 0x1024fab38&gt;</em><a class="headerlink" href="#django_autocomplete.forms.SearchForm.opts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="django_autocomplete.forms.SearchFormMetaclass">
+<em class="property">class </em><tt class="descclassname">django_autocomplete.forms.</tt><tt class="descname">SearchFormMetaclass</tt><a class="reference internal" href="_modules/django_autocomplete/forms.html#SearchFormMetaclass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.forms.SearchFormMetaclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.forms.forms.DeclarativeFieldsMetaclass</span></tt></p>
+<p>The search form meta class ensures the form has a model.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="django_autocomplete.forms.searchform_factory">
+<tt class="descclassname">django_autocomplete.forms.</tt><tt class="descname">searchform_factory</tt><big>(</big><em>model</em>, <em>form=&lt;class 'django_autocomplete.forms.SearchForm'&gt;</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/forms.html#searchform_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.forms.searchform_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a SearchForm - in essence from django.forms.models.modelform_factory</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="views.html"
+                        title="previous chapter">Views</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/forms.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="views.html" title="Views"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Autocomplete 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Darryl Cousins.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
