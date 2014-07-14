@@ -1,17 +1,6 @@
-# django third party modules
+django>=1.6.5
 django-extensions>=1.3.7
 django-bootstrap3
-
-# quality control
-flake8>=2.1.0
-coverage
-
-# better interpreter
-bpython
-
-# documentation
-sphinx
-docutils
 
 # for django dates
 pytz
