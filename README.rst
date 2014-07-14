@@ -87,7 +87,7 @@ related by ForeignKey, but this can be disabled::
 
 
 .. note:: setting an attribute `autocomplete` that is an instance of
-          `:class:django_autocomplete.meta.Autocomplete` is required for each model
+          :class:`django_autocomplete.meta.Autocomplete` is required for each model
           chosen to use autocomplete widgets.
 
 Urls
@@ -110,9 +110,9 @@ The View
 --------
 
 The view used to answer the get request is
-:class`django_autocomplete.views.AutocompleteView`. This view has its own
+:class:`django_autocomplete.views.AutocompleteView`. This view has its own
 ``search`` method but the developer can provide a custom search method for the
-autocomplete. From the :class`AutocompleteView`::
+autocomplete. From the :class:`django_autocomplete.views.AutocompleteView`::
 
         // the developer can implement own search method
         if hasattr(self.model.objects, 'search'):
@@ -152,7 +152,7 @@ Equally so for inlines formsets::
 
 `AutocompleteSelectMultipleWidget` can also be used in reverse many to one
 relationships but an admin form will be required. See
-`class:project.forms.CountryModelForm` for an example.
+class:`project.forms.CountryModelForm` for an example.
 
 .. note:: For inlines the template `admin/inlines/inline_tabular.html` has been
           altered to hook the widgets into the javascript.
@@ -184,7 +184,7 @@ It has not been tested for inline forms but there is an example of usage in `dja
 Changelist Search
 *****************
 
-`class:django_autocomplete.widgets.SearchInput` can be used in the
+class:`django_autocomplete.widgets.SearchInput` can be used in the
 bootstrapped3_ admin list views to provide autocomplete search for autocomplete
 enabled models.
 
