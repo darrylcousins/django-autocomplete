@@ -45,17 +45,6 @@ And can be run with::
 There are no urls beyond the admin screens and api json views. It attempts to
 demonstrate the autocomplete widgets. All models demonstrate some aspect of the widgets.
 
-Run Tests
----------
-
-Run the tests::
-
-    $ python runtests.py
-
-Run the tests with coverage (needs the extra packages as mentioned above)::
-
-    $ python runtests.py coverage
-
 Setting up models to use autocomplete
 -------------------------------------
 
