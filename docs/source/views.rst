@@ -1,4 +1,5 @@
-.. include:: ../../django_autocomplete/tests/views.rst
+Views
+=====
 
 .. automodule:: django_autocomplete.views
     :members:
