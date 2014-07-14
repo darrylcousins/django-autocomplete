@@ -15,6 +15,11 @@
 
 import sys
 import os
+import sys, os
+
+sys.path.append(os.path.dirname(__file__))
+import django 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
