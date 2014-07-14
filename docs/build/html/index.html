@@ -66,35 +66,15 @@
 <p>Autocomplete for django models. Form widgets and admin integration examples.</p>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<p>For the widgets bootstrap3 is required <a class="reference external" href="&lt;https://github.com/dyve/django-bootstrap3&gt;">django-bootstrap3</a> is a good option. To
-use the widgets in the admin then <a class="reference external" href="&lt;https://github.com/darrylcousins/django-admin-bootstrapped3&gt;">bootstrapped3</a> admin will be useful.</p>
+<ul class="simple">
+<li>Django <tt class="docutils literal"><span class="pre">&gt;=1.7.x</span></tt>.</li>
+<li>Python <tt class="docutils literal"><span class="pre">3</span></tt></li>
+</ul>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>Simple install into a virtualenv for testing and evaluation:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ git clone https://github.com/darrylcousins/django-autocomplete.git
-$ cd django-autocomplete
-$ python setup.py develop
-</pre></div>
-</div>
-</div>
-<div class="section" id="other-requirements">
-<h2>Other Requirements<a class="headerlink" href="#other-requirements" title="Permalink to this headline">¶</a></h2>
-<p>For the extra packages to run flake, sphinx and coverage and to run the test
-project <a class="reference external" href="&lt;https://github.com/dyve/django-bootstrap3&gt;">django-bootstrap3</a> and <a class="reference external" href="&lt;https://github.com/darrylcousins/django-admin-bootstrapped3&gt;">bootstrapped3</a> admin are installed from
-requirements.txt.:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ pip install -r requirements.txt
-</pre></div>
-</div>
-</div>
-<div class="section" id="run-tests">
-<h2>Run Tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h2>
-<p>Run the tests:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ python runtests.py
-</pre></div>
-</div>
-<p>Run the tests with coverage (needs the extra packages as mentioned above):</p>
-<div class="highlight-python"><div class="highlight"><pre>$ python runtests.py coverage
+<p>Simple install into a virtualenv:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ pip install git+https://github.com/darrylcousins/django-autocomplete.git
 </pre></div>
 </div>
 </div>
@@ -103,7 +83,6 @@ requirements.txt.:</p>
 <p>Get the test project from github:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ git clone https://github.com/darrylcousins/django-project.git
 $ cd django-project
-$ python setup.py develop
 </pre></div>
 </div>
 <p>The test project uses <a class="reference external" href="&lt;https://github.com/dyve/django-bootstrap3&gt;">django-bootstrap3</a> and <a class="reference external" href="&lt;https://github.com/darrylcousins/django-admin-bootstrapped3&gt;">bootstrapped3</a> admin.  these extra
@@ -125,7 +104,18 @@ $ python manage.py loaddata project/fixtures/project.json
 </pre></div>
 </div>
 <p>There are no urls beyond the admin screens and api json views. It attempts to
-demonstrate the autocomplete widgets.</p>
+demonstrate the autocomplete widgets. All models demonstrate some aspect of the widgets.</p>
+</div>
+<div class="section" id="run-tests">
+<h2>Run Tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h2>
+<p>Run the tests:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ python runtests.py
+</pre></div>
+</div>
+<p>Run the tests with coverage (needs the extra packages as mentioned above):</p>
+<div class="highlight-python"><div class="highlight"><pre>$ python runtests.py coverage
+</pre></div>
+</div>
 </div>
 <div class="section" id="setting-up-models-to-use-autocomplete">
 <h2>Setting up models to use autocomplete<a class="headerlink" href="#setting-up-models-to-use-autocomplete" title="Permalink to this headline">¶</a></h2>
@@ -306,9 +296,8 @@ up a form to be model aware. It closely follows the django ModelForm to do so.</
 <li><a class="reference internal" href="#django-autocomplete">Django Autocomplete</a><ul>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#other-requirements">Other Requirements</a></li>
-<li><a class="reference internal" href="#run-tests">Run Tests</a></li>
 <li><a class="reference internal" href="#build-and-run-test-project">Build and Run Test Project</a></li>
+<li><a class="reference internal" href="#run-tests">Run Tests</a></li>
 <li><a class="reference internal" href="#setting-up-models-to-use-autocomplete">Setting up models to use autocomplete</a></li>
 <li><a class="reference internal" href="#urls">Urls</a></li>
 <li><a class="reference internal" href="#the-view">The View</a></li>
