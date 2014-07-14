@@ -60,6 +60,8 @@ And set this as the trigger on the event ``focus``, not this could be any event,
 
         this.setTrigger(this.trigger, 'focus');
 
+.. note:: Any other setup could take place here - see as an example ``autocomplete_multipleselect.js``.
+
 The next command declares the jqueryui autocomplete plugin on the input field of the modal.
 
 .. note:: The input field in the modal is available as ``this.input``.
@@ -68,7 +70,7 @@ The next command declares the jqueryui autocomplete plugin on the input field of
 
       this.initAutocomplete()
 
-Then bind the select action of the automcomplete.
+Then bind the select action of the autocomplete.
 
 .. note:: This method is not declared in ``AutocompleteBase`` and gives the
           developer freedom to declare what happens when a result is returned from the server.

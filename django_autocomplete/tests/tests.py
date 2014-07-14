@@ -3,6 +3,8 @@ import unittest
 import doctest
 
 from django.test import RequestFactory
+from django.contrib.auth.models import User
+from django.test import Client
 
 from django_autocomplete.tests.models import TestModel
 from django_autocomplete.tests.models import TestFKModel
@@ -12,6 +14,8 @@ def setUp(test):
     test.globs['request_factory'] = RequestFactory()
     test.globs['TestModel'] = TestModel
     test.globs['TestFKModel'] = TestFKModel
+    test.globs['Client'] = Client
+    test.globs['User'] = User
 
 
 def tearDown(test):
@@ -19,12 +23,12 @@ def tearDown(test):
 
 
 def load_tests(loader, tests, ignore):
-    list_of_doctests = []
-    list_of_doctests.append('django_autocomplete.views')
-    list_of_doctests.append('django_autocomplete.widgets')
-    list_of_doctests.append('django_autocomplete.meta')
-    list_of_doctests.append('django_autocomplete.urls')
-
+    list_of_doctests = [
+        'django_autocomplete.views',
+        'django_autocomplete.widgets',
+        'django_autocomplete.meta',
+        'django_autocomplete.urls',
+        ]
     suite = unittest.TestSuite()
     for t in list_of_doctests:
         tests.addTest(doctest.DocTestSuite(
@@ -33,7 +37,8 @@ def load_tests(loader, tests, ignore):
             optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
         ))
 
-    list_of_docfiles = []
+    list_of_docfiles = [
+        ]
     for t in list_of_docfiles:
         tests.addTest(doctest.DocFileSuite(
             t, setUp=setUp, tearDown=tearDown,

@@ -9,6 +9,9 @@ import django
 
 DEFAULT_SETTINGS = dict(
     INSTALLED_APPS=(
+        'django.contrib.sessions',
+        'django.contrib.contenttypes',
+        'django.contrib.auth',
         'django_autocomplete',
         'django_autocomplete.tests',
         ),
@@ -21,8 +24,9 @@ DEFAULT_SETTINGS = dict(
     STATIC_URL = '/static/',
     MIDDLEWARE_CLASSES=(
         'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddlewarer'
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
         ),
+    ROOT_URLCONF = 'django_autocomplete.tests.urls'
     )
 
 

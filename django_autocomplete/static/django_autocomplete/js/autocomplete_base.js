@@ -40,6 +40,9 @@
     // (because of way the modal is created??)
     $(input).val('');
     $(input).focus();
+    var status = $('span.ui-helper-hidden-accessible').get(0);
+    $(status).insertBefore(input);
+    $(status).html('<div>Type some characters ...</div>');
   }
 
   AutocompleteBase.prototype.setTrigger = function(el, action) {
@@ -47,9 +50,6 @@
       {obj: this},
       function(event) {
         var obj = event.data.obj;
-        console.log(obj)
-        console.log(obj.input)
-        console.log(obj.modal)
         $(obj.modal).modal('show');
         setTimeout(
           function() {
@@ -115,7 +115,7 @@
     var modal_body = quickElement('div', modal_content, false,
          'class', 'modal-body');
     var modal_body_group = quickElement('div', modal_body, false,
-         'class', 'form-group has-feedback');
+         'class', 'form-group has-feedback ui-widget');
     var label = quickElement('label', modal_body_group, 'Search',
          'class', 'hidden sr-only',
          'for', this.field_name + '_autocomplete');

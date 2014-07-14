@@ -39,12 +39,14 @@ class AutocompleteMeta(object):
     name = ''
     path = ''
     fields = []
+    permissions = None
     follow_fks = True
 
-    def __init__(self, name, path, fields=[], follow_fks=True):
+    def __init__(self, name, path, fields=[], follow_fks=True, permissions=None):
         self.name = name
         self.path = path
         self.fields = fields
+        self.permissions = permissions
         self.follow_fks = follow_fks
 
 

@@ -4,11 +4,12 @@ from itertools import chain
 from django import forms
 from django.conf import settings
 from django.forms.utils import flatatt
+from django.template.loader import render_to_string
+from django.contrib.contenttypes.models import ContentType
+from django.utils.datastructures import MultiValueDict, MergeDict
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils import formats
-from django.template.loader import render_to_string
-from django.utils.datastructures import MultiValueDict, MergeDict
 from django.utils.html import format_html
 from django.utils.translation import ugettext as _
 
@@ -335,3 +336,137 @@ class AutocompleteSelectMultipleWidget(forms.SelectMultiple):
             'init': '__prefix__' not in name,
         }))
 
+
+class AutocompleteCTWidget(forms.Select):
+    """
+    A autocomplete select widget to handle generec content types
+    for admin screens.
+
+        >>> autocomplete = AutocompleteCTWidget()
+        >>> autocomplete
+        <django_autocomplete.widgets.AutocompleteCTWidget object at ...>
+
+    Renders with input field and bootstrap modal
+
+        >>> from django.contrib.contenttypes.models import ContentType
+        >>> from django.forms import ModelChoiceField
+        >>> queryset = ContentType.objects.all()[:2]
+        >>> field = ModelChoiceField(queryset=queryset,
+        ...     widget=AutocompleteCTWidget)
+        >>> result = field.widget.render('fkm', None, attrs=dict(id='id_fkm'))
+        >>> for line in result.split('\\n'):
+        ...     print(line)
+        <select id="id_fkm" name="fkm">
+        <option value="" selected="selected">---------</option>
+        <option value="...">...</option>
+        <option value="...">...</option>
+        </select>
+
+    A simple select is shown as for normal select widget. This is because the
+    widget cannot use autocomplete unless all the models have an autocomplete
+    attribute.
+
+    Again then with queryset restricted to model with autocomplete::
+
+        >>> queryset = ContentType.objects.filter(name='test model')
+        >>> field = ModelChoiceField(queryset=queryset,
+        ...     widget=AutocompleteCTWidget)
+        >>> result = field.widget.render('fkm', None, attrs=dict(id='id_fkm'))
+        >>> for line in result.split('\\n'):
+        ...     print(line)
+        <select id="id_fkm" name="fkm">
+          <option value="" selected="selected">---------</option>
+          <option value="...">test model</option>
+        </select>
+        <script type="text/javascript">
+          var SourceDict = {};
+          SourceDict["..."] = "api/filter/silly";
+          (function($) {
+            if (window.AutocompleteCTSelect != undefined) {
+              $("#id_fkm").change(
+                function() {
+                  var ctname = $(this).find("option:selected").html();
+                  var ctpk = $(this).val();
+                  var source = SourceDict[ctpk];
+                  $("#object_id_info").html("Searching " + ctname + " ...");
+                  new AutocompleteCTSelect(source, "id_object_id", "object_id", ctname).init();
+                })
+                $(document).ready(function() {
+                  $('<span class="text-muted" id="object_id_info"></span>').insertAfter("#id_object_id")
+                })
+            }
+          }(jQuery));
+        </script>
+
+    """
+    allow_multiple_selected = False
+    object_field = 'object_id'
+
+    class Media:
+        js = (
+            settings.STATIC_URL + 'django_autocomplete/js/autocomplete_base.js',
+            settings.STATIC_URL + 'django_autocomplete/js/autocomplete_ct_select.js',
+            )
+        css = {
+            'screen': (settings.STATIC_URL + 'django_autocomplete/css/autocomplete.css', )
+            }
+
+    def render(self, name, value, attrs=None):
+        result = super(AutocompleteCTWidget, self).render(name, value, attrs)
+        ct = None
+        verbose_name_plural = ''
+        if value:
+            ct = ContentType.objects.get(pk=value)
+            if not hasattr(ct.model_class(), 'autocomplete'):
+                # abandon the widget
+                return result
+            verbose_name_plural = ct.model_class()._meta.verbose_name_plural.capitalize()
+        output = [result]
+
+        output.append('<script type="text/javascript">')
+        output.append('var SourceDict = {};')
+        for choice in self.choices:
+            if choice[0]:
+                content_type = ContentType.objects.get(pk=choice[0])
+                if not hasattr(content_type.model_class(), 'autocomplete'):
+                    # if no autocomplete on any of these models then abandon the widget
+                    return result
+                path = content_type.model_class().autocomplete.path
+                output.append('SourceDict["%(key)s"] = "%(value)s";' % dict(
+                    key=choice[0],
+                    value=path))
+        output.append('(function($) {')
+        output.append('if (window.AutocompleteCTSelect != undefined) {')
+        output.append('$("#id_%(name)s").change(' % dict(name=name))
+        output.append('function() {')
+        output.append('var ctname = $(this).find("option:selected").html();')
+        output.append('var ctpk = $(this).val();')
+        output.append('var source = SourceDict[ctpk];')
+        search = _('Searching')
+        output.append('$("#%(name)s_info").html("%(search)s " + ctname + " ...");' % dict(
+            name=self.object_field,
+            search=search))
+        output.append(
+            'new AutocompleteCTSelect(source, "id_%(name)s", "%(name)s", ctname).init();' % dict(
+                name=self.object_field))
+        output.append('})')
+
+        output.append('$(document).ready(function() {')
+        output.append(
+            """$('<span class="text-muted" id="%(name)s_info"></span>').insertAfter("#id_%(name)s")""" % dict(  # nopep8
+                name=self.object_field))
+        if ct:
+            # with a selected value the autocomplete can be initialised
+            model = ct.model_class()
+            output.append(
+                'new AutocompleteCTSelect("%(source)s", "id_%(name)s", "%(name)s", "%(title)s").init();' % dict(
+                    source=model.autocomplete.path,
+                    name=self.object_field,
+                    title=verbose_name_plural))
+        output.append('})')
+
+        output.append('}')
+        output.append('}(jQuery));')
+        output.append('</script>')
+
+        return mark_safe('\n'.join(output))

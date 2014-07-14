@@ -1,8 +1,4 @@
-Views
-=====
-
-The autocomplete views provides a single view to provide json response to a
-`term` query as expected by the jquery.autocomplete ui plugin.
+.. include:: ../../django_autocomplete/tests/views.rst
 
 .. automodule:: django_autocomplete.views
     :members:

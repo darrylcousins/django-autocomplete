@@ -10,7 +10,7 @@ class AutocompleteView(View):
     """
     Simple json response view as backend support to the autocomplete form.
 
-        >>> view = AutocompleteView.as_view()
+        >>> view = AutocompleteView.as_view(model=TestModel)
 
     """
     model = None
@@ -27,9 +27,74 @@ class AutocompleteView(View):
             >>> response = view.get(request)
             >>> response.status_code
             200
+            >>> response.content
+            b'[]'
+
+        We can set permissions to ``True`` that the request user should be
+        authenticated.
+
+            >>> m = TestModel()
+            >>> m.autocomplete.permissions = True
+            >>> view.model = m
+
+        Create a user::
+
+            >>> user = User.objects.create_user('member', password='member')
+            >>> user.save()
+
+        Unauthenticated user::
+
+            >>> client = Client()
+            >>> response = client.get('/api/filter/silly/?term=c')
+            >>> response.status_code
+            401
+
+        Authenticate::
+
+            >>> client.login(username='member', password='member')
+            True
+            >>> response = client.get('/api/filter/silly/?term=c')
+            >>> response.status_code
+            200
+
+        Say we have a permission we want for our users::
+
+            >>> m.autocomplete.permissions = 'is_staff'
+            >>> view.model = m
+            >>> response = client.get('/api/filter/silly/?term=c')
+            >>> response.status_code
+            401
+
+        Create a staff user and try again::
+
+            >>> admin = User.objects.create_superuser('admin', email='admin@admin.org', password='admin')
+            >>> admin.save()
+            >>> client.login(username='admin', password='admin')
+            True
+            >>> response = client.get('/api/filter/silly/?term=c')
+            >>> response.status_code
+            200
+
+        Permissions can be a list too::
+
+            >>> m.autocomplete.permissions = ['is_staff', 'is_superuser']
+            >>> view.model = m
+            >>> response = client.get('/api/filter/silly/?term=c')
+            >>> response.status_code
+            200
 
         """
         self.request = request
+        perms = self.model.autocomplete.permissions
+        if perms is not None:
+            if not request.user.is_authenticated():
+                return HttpResponse('Unauthorized', status=401)
+            if not isinstance(perms, bool):
+                if isinstance(perms, bytes):
+                    perms = [perms]
+                if not request.user.has_perms(perms):
+                    return HttpResponse('Unauthorized', status=401)
+        # passed permissions
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
@@ -80,6 +145,7 @@ class AutocompleteView(View):
         if not term:
             return context
 
+        # the developer can implement own search method
         if hasattr(self.model.objects, 'search'):
             queryset = self.model.objects.search(
                 self.model.objects.all(),
@@ -156,7 +222,7 @@ class AutocompleteView(View):
 
     def search(self, queryset, terms):
         """
-        Search method. This can be overridden by giving the model manager a `search` method.
+        Search method. This can be overridden by giving the model manager a ``search`` method.
 
         :arg queryset: :class:`django.db.models.QuerySet`
         :arg terms:    :list: of strings
@@ -189,7 +255,7 @@ class AutocompleteView(View):
            [<TestModel: TestModel object>]
 
 
-        The model has a `autocomplete` attribute that is an instance of 
+        The model has a ``autocomplete`` attribute that is an instance of 
         :class:`django_autocomplete.meta.AutocompleteMeta`. The test model
         allows ForeignKey fields to be followed.
 
@@ -247,8 +313,6 @@ class AutocompleteView(View):
             >>> [field.name for field in fields]
             ['id', 'name', 'description', 'fkm']
 
-        Biomarker and foodattribute are :class:`Biomarker` and :class:`FoodAttribute` respectively.
-
         Construct a query that spans all three objects:
 
             >>> q = view._construct_q(None, fields, 'silly_search', follow_fks=True)
@@ -298,10 +362,10 @@ class AutocompleteView(View):
 
     def _start_query(self, q, **kwargs):
         """
-        Helper method to ensure the validity of the Q objects in the chain of `OR` queries
+        Helper method to ensure the validity of the Q objects in the chain of ``OR`` queries
 
         :arg q:        :class:`django.db.models.Q` object or None
-        :arg kwargs: :dict: `field name` search term` values
+        :arg kwargs: :dict: ``field name`` ``search term`` values
         :returns:      :class:`django.db.models.Q` object
 
         Something like:
