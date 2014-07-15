@@ -28,7 +28,7 @@ def make_api_urls(_urlpatterns, model):
 
     """
     _urlpatterns.append(
-        url(r'^%s/$' % (
+        url(r'^%s$' % (
             model.autocomplete.path
             ),
             AutocompleteView.as_view(
