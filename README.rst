@@ -87,7 +87,7 @@ related by ForeignKey, but this can be disabled::
 
 
 .. note:: setting an attribute `autocomplete` that is an instance of
-          :class:`django_autocomplete.meta.Autocomplete` is required for each model
+          :class:`django_autocomplete.meta.AutocompleteMeta` is required for each model
           chosen to use autocomplete widgets.
 
 Urls
