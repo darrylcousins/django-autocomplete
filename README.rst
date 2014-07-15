@@ -70,9 +70,9 @@ list (see `has_perms
 
 The default is ``None``::
 
-    ...      permissions=True,
-    ...      permissions='is_staff',
-    ...      permissions=['is_staff'],
+    ...      permissions=True,         # user must be authenticated
+    ...      permissions='is_staff',   # user must have permission is_staff
+    ...      permissions=['is_staff'], # user must have all permissions in list of permissions
 
 The default is to filter on all Char and Text fields but the developer can
 define the fields to search on::
