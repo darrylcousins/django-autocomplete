@@ -206,18 +206,18 @@
                 <span class="p">[</span><span class="n">term</span><span class="p">])</span>
 
         <span class="c"># find the first field to use as a label</span>
-        <span class="k">def</span> <span class="nf">fields</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_searchable_field</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
-                    <span class="k">yield</span> <span class="n">field</span>
+        <span class="c"># def fields():</span>
+        <span class="c">#     for field in self.model._meta.fields:</span>
+        <span class="c">#         if self.is_searchable_field(field):</span>
+        <span class="c">#             yield field</span>
 
-        <span class="n">label</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">fields</span><span class="p">())</span><span class="o">.</span><span class="n">name</span>
+        <span class="c"># label = next(fields()).name</span>
 
-        <span class="k">for</span> <span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">queryset</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">queryset</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
             <span class="n">context</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
-                <span class="nb">id</span><span class="o">=</span><span class="n">_id</span><span class="p">,</span>
-                <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">label</span><span class="o">=</span><span class="n">name</span>
+                <span class="nb">id</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">),</span>
+                <span class="n">label</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
                 <span class="p">))</span>
         <span class="k">return</span> <span class="n">context</span>
 </div>

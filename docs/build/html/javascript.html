@@ -75,12 +75,12 @@ button as a trigger and some javascript to initialize the search:</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Unlike the widgets the javascript is agnostic to the form, and only
+<p class="last">Unlike the widgets the javascript is unaware to the form, and only
 cares about the url path to the api. Jquery will call this url with the query
 string <tt class="docutils literal"><span class="pre">term=&lt;entered&gt;</span></tt>.</p>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">AutocompleteExt</span></tt> object needs to be defined, first the constructor:</p>
-<div class="highlight-python"><div class="highlight"><pre>window.AutocompleteSearch = function(source, field_id, field_name, field_title) {
+<div class="highlight-python"><div class="highlight"><pre>window.AutocompleteExt = function(source, field_id, field_name, field_title) {
   this.source = source;
   this.field_id = field_id;
   this.field_name = field_name;
@@ -91,15 +91,15 @@ string <tt class="docutils literal"><span class="pre">term=&lt;entered&gt;</span
 <p>This just repeats the <tt class="docutils literal"><span class="pre">AuotcompleteBase</span></tt> constructor. We then declare the new
 object prototype to be that of <tt class="docutils literal"><span class="pre">AutocompleteBase</span></tt> so it inherits the methods of
 the base:</p>
-<div class="highlight-python"><div class="highlight"><pre>AutocompleteSearch.prototype = new AutocompleteBase();
+<div class="highlight-python"><div class="highlight"><pre>AutocompleteExt.prototype = new AutocompleteBase();
 </pre></div>
 </div>
 <p>But it needs to use its own constructor (otherwise we get a base object):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">AutocompleteSearch</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">constructor</span> <span class="o">=</span> <span class="n">AutocompleteSearch</span><span class="p">;</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">AutocompleteExt</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">constructor</span> <span class="o">=</span> <span class="n">AutocompleteExt</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Then we must declare its <tt class="docutils literal"><span class="pre">init</span></tt> method, this is described line by line below:</p>
-<div class="highlight-python"><div class="highlight"><pre>AutocompleteSearch.prototype.init = function() {
+<div class="highlight-python"><div class="highlight"><pre>AutocompleteExt.prototype.init = function() {
 </pre></div>
 </div>
 <p>Init the base object, this adds the modal to the <tt class="docutils literal"><span class="pre">dom</span></tt> and initializes some attributes:</p>
@@ -118,29 +118,23 @@ the base:</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Any other setup could take place here - see as an example <tt class="docutils literal"><span class="pre">autocomplete_multipleselect.js</span></tt>.</p>
 </div>
-<p>The next command declares the jqueryui autocomplete plugin on the input field of the modal.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The input field in the modal is available as <tt class="docutils literal"><span class="pre">this.input</span></tt>.</p>
-</div>
+<p>The next command declares the jqueryui autocomplete plugin on the input field
+of the modal.  The input field in the modal is available as <tt class="docutils literal"><span class="pre">this.input</span></tt>.:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">this</span><span class="o">.</span><span class="n">initAutocomplete</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Then bind the select action of the autocomplete.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This method is not declared in <tt class="docutils literal"><span class="pre">AutocompleteBase</span></tt> and gives the
-developer freedom to declare what happens when a result is returned from the server.</p>
-</div>
-<p>Call the method that we declare below:</p>
+<p>Then bind the select action of the autocomplete.:</p>
 <div class="highlight-python"><div class="highlight"><pre>this.bindAutocomplete() // end init
 </pre></div>
 </div>
-<p>In this example all that happens is that the input field receives the value of the label.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The AutocompleteExt is passed with the event and is available as <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method is not declared in <tt class="docutils literal"><span class="pre">AutocompleteBase</span></tt> and gives the
+developer freedom to declare what happens when a result is returned from the server.</p>
 </div>
+<p>In this example all that happens is that the input field receives the value of
+the label. Note that the AutocompleteExt object is passed with the event and is
+available as <tt class="docutils literal"><span class="pre">obj</span></tt>.</p>
 <div class="highlight-python"><div class="highlight"><pre>AutocompleteExt.prototype.bindAutocomplete = function() {
 
   // and add the action on select of item

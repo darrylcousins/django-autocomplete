@@ -21,13 +21,13 @@ button as a trigger and some javascript to initialize the search::
             }(jQuery));
           </script>
 
-.. note:: Unlike the widgets the javascript is agnostic to the form, and only
+.. note:: Unlike the widgets the javascript is unaware to the form, and only
           cares about the url path to the api. Jquery will call this url with the query
           string ``term=<entered>``.
 
 The ``AutocompleteExt`` object needs to be defined, first the constructor::
 
-        window.AutocompleteSearch = function(source, field_id, field_name, field_title) {
+        window.AutocompleteExt = function(source, field_id, field_name, field_title) {
           this.source = source;
           this.field_id = field_id;
           this.field_name = field_name;
@@ -38,15 +38,15 @@ This just repeats the ``AuotcompleteBase`` constructor. We then declare the new
 object prototype to be that of ``AutocompleteBase`` so it inherits the methods of
 the base::
 
-        AutocompleteSearch.prototype = new AutocompleteBase();
+        AutocompleteExt.prototype = new AutocompleteBase();
 
 But it needs to use its own constructor (otherwise we get a base object)::
 
-        AutocompleteSearch.prototype.constructor = AutocompleteSearch;
+        AutocompleteExt.prototype.constructor = AutocompleteExt;
 
 Then we must declare its ``init`` method, this is described line by line below::
 
-        AutocompleteSearch.prototype.init = function() {
+        AutocompleteExt.prototype.init = function() {
 
 Init the base object, this adds the modal to the ``dom`` and initializes some attributes::
 
@@ -62,26 +62,21 @@ And set this as the trigger on the event ``focus``, not this could be any event,
 
 .. note:: Any other setup could take place here - see as an example ``autocomplete_multipleselect.js``.
 
-The next command declares the jqueryui autocomplete plugin on the input field of the modal.
-
-.. note:: The input field in the modal is available as ``this.input``.
-
-::
+The next command declares the jqueryui autocomplete plugin on the input field
+of the modal.  The input field in the modal is available as ``this.input``.::
 
       this.initAutocomplete()
 
-Then bind the select action of the autocomplete.
-
-.. note:: This method is not declared in ``AutocompleteBase`` and gives the
-          developer freedom to declare what happens when a result is returned from the server.
-
-Call the method that we declare below::
+Then bind the select action of the autocomplete.::
 
       this.bindAutocomplete() // end init
 
-In this example all that happens is that the input field receives the value of the label.
+.. warning:: This method is not declared in ``AutocompleteBase`` and gives the
+             developer freedom to declare what happens when a result is returned from the server.
 
-.. note:: The AutocompleteExt is passed with the event and is available as ``obj``.
+In this example all that happens is that the input field receives the value of
+the label. Note that the AutocompleteExt object is passed with the event and is
+available as ``obj``.
 
 ::
 
