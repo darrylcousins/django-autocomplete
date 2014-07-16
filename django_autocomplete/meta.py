@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class AutocompleteMeta(object):
+class AutocompleteMeta:
     """
     Simple meta class to allow the model to define aspects of the autocomplete.
 
@@ -42,12 +42,13 @@ class AutocompleteMeta(object):
     permissions = None
     follow_fks = True
 
-    def __init__(self, name, path, fields=[], follow_fks=True, permissions=None):
-        self.name = name
-        self.path = path
-        self.fields = fields
-        self.permissions = permissions
-        self.follow_fks = follow_fks
-
+    def __init__(self, autocomplete=None, **kwargs):
+        if autocomplete:
+            autocomplete_attrs = autocomplete.__dict__
+        else:
+            autocomplete_attrs = kwargs
+        for attr in self.__class__.__dict__:
+            if attr in autocomplete_attrs:
+                self.__dict__[attr] = autocomplete_attrs[attr]
 
 

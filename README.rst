@@ -50,7 +50,7 @@ Setting up models to use autocomplete
 
 To set up models to use the autocomplete widgets they need to have a api view
 that will return json which is a list of the items filtered by the request
-variable `term`, which itself is the default search variable sent with request
+variable ``term``, which itself is the default search variable sent with request
 by the `jqueryui autocomplete widget <http://jqueryui.com/autocomplete/>`_.
 
 The design decision of this package is to have configuration made at the model level::
@@ -94,15 +94,15 @@ Urls
 ----
 
 As can be seen above, each model sets its path to the api view. In order for
-these views to be created set the following in `urls.py`::
+these views to be created set the following in ``urls.py``::
 
         url(r'', include('django_autocomplete.urls')),
 
 .. note:: do not use a prefix (e.g. r'api/') as only the path set by
           `MyModel.autocomplete.path` is used.
 
-Once this is done then the view (following the `MyModel` example)
-`/api/filter/mymodel/` will be available to the autocomplete widgets::
+Once this is done then the view (following the ``MyModel`` example)
+``/api/filter/mymodel/`` will be available to the autocomplete widgets::
 
         http://localhost:8000/api/filter/mymodel/?term=se
 
@@ -134,7 +134,7 @@ Formfield widgets
 The only examples found in the example project hooks the widgets into the
 bootstrapped3_
 admin. To use the widgets all that is required in most cases is to set
-`formfield_overrides`::
+``formfield_overrides``::
 
         class MyModelAdmin(admin.ModelAdmin):
             formfield_overrides = {
@@ -150,11 +150,11 @@ Equally so for inlines formsets::
               models.ManyToManyField: {'widget': AutocompleteSelectMultipleWidget},
               }
 
-`AutocompleteSelectMultipleWidget` can also be used in reverse many to one
+:class:`AutocompleteSelectMultipleWidget` can also be used in reverse many to one
 relationships but an admin form will be required. See
-class:`project.forms.CountryModelForm` for an example.
+:class:`project.forms.CountryModelForm` for an example.
 
-.. note:: For inlines the template `admin/inlines/inline_tabular.html` has been
+.. note:: For inlines the template ``dmin/inlines/inline_tabular.html`` has been
           altered to hook the widgets into the javascript.
 
 Generic Content Type Widget
@@ -177,32 +177,36 @@ But some assumptions are made, namely the ``object_id`` is assumed to be name
                 kwargs['widget'].object_field = 'object_id'
             return super(TaggedItemAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
-Although untested it should allow for a different name for the ``object_id`` field and for models with more than one ``GenericForeignKey``.
+Although untested it should allow for a different name for the ``object_id``
+field and for models with more than one ``GenericForeignKey``.
 
-It has not been tested for inline forms but there is an example of usage in `django-project`_.
+It has not been tested for inline forms but there is an example of usage in
+`django-project`_.
 
 Changelist Search
 *****************
 
-class:`django_autocomplete.widgets.SearchInput` can be used in the
+:class:`django_autocomplete.widgets.SearchInput` can be used in the
 bootstrapped3_ admin list views to provide autocomplete search for autocomplete
 enabled models.
 
 This must be explicitly configured in the ModelAdmin::
 
+        from django_autocomplete.forms import searchform_factory
+
         class MyModelAdmin(admin.ModelAdmin):
             model = MyModel
             search_form = searchform_factory(MyModel)
 
-..note:: The template `admin/search_form.html` tests for the presence
-         `model_admin.search_form` and renders the form if defined.
+.. note:: The template ``admin/search_form.html`` tests for the presence of the attribute
+          ``model_admin.search_form`` and renders the form if defined.
 
 Using Widgets Outside the Admin
 -------------------------------
 
 Each of the widgets need to be aware of the model they are searching. Thus they
-have access to the `autocomplete` attribute of the model. The example form
-`:model:django_autocomplete.forms.SearchForm` provides and example of setting
+have access to the ``autocomplete`` attribute of the model. The example form
+`:class.forms.SearchForm` provides and example of setting
 up a form to be model aware. It closely follows the django ModelForm to do so.
 
 .. _bootstrapped3: <https://github.com/darrylcousins/django-admin-bootstrapped3>
