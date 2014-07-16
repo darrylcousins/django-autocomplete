@@ -86,7 +86,7 @@
 $ cd django-project
 </pre></div>
 </div>
-<p>The test project uses <a class="reference external" href="&lt;https://github.com/dyve/django-bootstrap3&gt;">django-bootstrap3</a> and <a class="reference external" href="&lt;https://github.com/darrylcousins/django-admin-bootstrapped3&gt;">bootstrapped3</a> admin.  these extra
+<p>The test project uses <a class="reference external" href="https://github.com/dyve/django-bootstrap3">django-bootstrap3</a> and <a class="reference external" href="https://github.com/darrylcousins/django-admin-bootstrapped3">bootstrapped3</a> admin.  these extra
 packages can be installed with:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ pip install -r requirements.txt
 </pre></div>
@@ -191,7 +191,7 @@ else:
 <div class="section" id="formfield-widgets">
 <h3>Formfield widgets<a class="headerlink" href="#formfield-widgets" title="Permalink to this headline">¶</a></h3>
 <p>The only examples found in the example project hooks the widgets into the
-<a class="reference external" href="&lt;https://github.com/darrylcousins/django-admin-bootstrapped3&gt;">bootstrapped3</a> admin. To use the widgets all that is required in most cases is
+<a class="reference external" href="https://github.com/darrylcousins/django-admin-bootstrapped3">bootstrapped3</a> admin. To use the widgets all that is required in most cases is
 to set <tt class="docutils literal"><span class="pre">formfield_overrides</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyModelAdmin</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">ModelAdmin</span><span class="p">):</span>
     <span class="n">formfield_overrides</span> <span class="o">=</span> <span class="p">{</span>
@@ -239,13 +239,15 @@ altered to hook the widgets into the javascript.</p>
 <p>Although untested it should allow for a different name for the <tt class="docutils literal"><span class="pre">object_id</span></tt>
 field and for models with more than one <tt class="docutils literal"><span class="pre">GenericForeignKey</span></tt>.</p>
 <p>It has not been tested for inline forms but there is an example of usage in
-<a class="reference external" href="&lt;https://github.com/darrylcousins/django-project&gt;">django-project</a>.</p>
+<a class="reference external" href="https://github.com/darrylcousins/django-project">django-project</a>.</p>
 </div>
 <div class="section" id="changelist-search">
 <h3>Changelist Search<a class="headerlink" href="#changelist-search" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="widgets.html#django_autocomplete.widgets.SearchInput" title="django_autocomplete.widgets.SearchInput"><tt class="xref py py-class docutils literal"><span class="pre">django_autocomplete.widgets.SearchInput</span></tt></a> can be used in the
-<a class="reference external" href="&lt;https://github.com/darrylcousins/django-admin-bootstrapped3&gt;">bootstrapped3</a> admin list views to provide autocomplete search for autocomplete
-enabled models.</p>
+<a class="reference external" href="https://github.com/darrylcousins/django-admin-bootstrapped3">bootstrapped3</a> admin list views to provide autocomplete search for autocomplete
+enabled models. On selection in the autocomplete the change form view is
+displayed. The standard search form is then also included which abides by the
+<tt class="docutils literal"><span class="pre">ModelAdmin.search_fields</span></tt> to filter the list.</p>
 <p>This must be explicitly configured in the ModelAdmin:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django_autocomplete.forms</span> <span class="kn">import</span> <span class="n">searchform_factory</span>
 

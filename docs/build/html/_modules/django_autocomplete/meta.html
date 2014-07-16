@@ -58,6 +58,14 @@
 <span class="sd">    :var path: the path to autocomplete view</span>
 <span class="sd">    :var follow_fks: when searching should ForeignKey fields be followed.</span>
 <span class="sd">    :var fields: list of fields, if empty then all searchable fields are used</span>
+<span class="sd">    :var permissions: bool, string or iter</span>
+
+<span class="sd">    * if ``permissions`` ``False`` (default) no authentication is checked.</span>
+<span class="sd">    * if ``permissions`` ``True`` then request.user must be authenticated.</span>
+<span class="sd">    * if ``permissions`` ``string`` then request.user must have the permission defined by ``string``.</span>
+<span class="sd">    * if ``permissions`` ``iter`` then request.user must have all the permissionis defined in the ``iter``</span>
+
+<span class="sd">    See :class:`django_autocomplete.views.AutocompleteView` for more clarification.</span>
 
 <span class="sd">    For example as a simple object:</span>
 

@@ -69,11 +69,19 @@
 <li><strong>path</strong> &#8211; the path to autocomplete view</li>
 <li><strong>follow_fks</strong> &#8211; when searching should ForeignKey fields be followed.</li>
 <li><strong>fields</strong> &#8211; list of fields, if empty then all searchable fields are used</li>
+<li><strong>permissions</strong> &#8211; bool, string or iter</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<ul class="simple">
+<li>if <tt class="docutils literal"><span class="pre">permissions</span></tt> <tt class="docutils literal"><span class="pre">False</span></tt> (default) no authentication is checked.</li>
+<li>if <tt class="docutils literal"><span class="pre">permissions</span></tt> <tt class="docutils literal"><span class="pre">True</span></tt> then request.user must be authenticated.</li>
+<li>if <tt class="docutils literal"><span class="pre">permissions</span></tt> <tt class="docutils literal"><span class="pre">string</span></tt> then request.user must have the permission defined by <tt class="docutils literal"><span class="pre">string</span></tt>.</li>
+<li>if <tt class="docutils literal"><span class="pre">permissions</span></tt> <tt class="docutils literal"><span class="pre">iter</span></tt> then request.user must have all the permissionis defined in the <tt class="docutils literal"><span class="pre">iter</span></tt></li>
+</ul>
+<p>See <a class="reference internal" href="views.html#django_autocomplete.views.AutocompleteView" title="django_autocomplete.views.AutocompleteView"><tt class="xref py py-class docutils literal"><span class="pre">django_autocomplete.views.AutocompleteView</span></tt></a> for more clarification.</p>
 <p>For example as a simple object:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django_autocomplete.meta</span> <span class="kn">import</span> <span class="n">AutocompleteMeta</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">TestModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>

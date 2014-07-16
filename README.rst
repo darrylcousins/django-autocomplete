@@ -187,7 +187,9 @@ Changelist Search
 
 :class:`django_autocomplete.widgets.SearchInput` can be used in the
 `bootstrapped3`_ admin list views to provide autocomplete search for autocomplete
-enabled models.
+enabled models. On selection in the autocomplete the change form view is
+displayed. The standard search form is then also included which abides by the
+``ModelAdmin.search_fields`` to filter the list.
 
 This must be explicitly configured in the ModelAdmin::
 
@@ -208,6 +210,6 @@ have access to the ``autocomplete`` attribute of the model. The example form
 :class:`projects.forms.SearchForm` provides and example of setting
 up a form to be model aware. It closely follows the django ModelForm to do so.
 
-.. _bootstrapped3: <https://github.com/darrylcousins/django-admin-bootstrapped3>
-.. _django-project: <https://github.com/darrylcousins/django-project>
-.. _django-bootstrap3: <https://github.com/dyve/django-bootstrap3>
+.. _bootstrapped3: https://github.com/darrylcousins/django-admin-bootstrapped3
+.. _django-project: https://github.com/darrylcousins/django-project
+.. _django-bootstrap3: https://github.com/dyve/django-bootstrap3

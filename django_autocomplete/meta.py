@@ -9,6 +9,14 @@ class AutocompleteMeta:
     :var path: the path to autocomplete view
     :var follow_fks: when searching should ForeignKey fields be followed.
     :var fields: list of fields, if empty then all searchable fields are used
+    :var permissions: bool, string or iter
+
+    * if ``permissions`` ``False`` (default) no authentication is checked.
+    * if ``permissions`` ``True`` then request.user must be authenticated.
+    * if ``permissions`` ``string`` then request.user must have the permission defined by ``string``.
+    * if ``permissions`` ``iter`` then request.user must have all the permissionis defined in the ``iter``
+
+    See :class:`django_autocomplete.views.AutocompleteView` for more clarification.
 
     For example as a simple object:
 
