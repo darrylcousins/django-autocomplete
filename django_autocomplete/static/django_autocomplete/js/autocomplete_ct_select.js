@@ -47,7 +47,6 @@
         if (ui.item) {
           $(obj.pk_input).attr('value', ui.item.id);
           $(obj.info).html(ui.item.label);
-          console.log(obj.modal)
           $(obj.modal).modal('hide');
         } else {
           alert("Nothing selected, input was " + this.value );

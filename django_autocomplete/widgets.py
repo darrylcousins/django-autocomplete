@@ -83,7 +83,7 @@ class SearchInput(forms.TextInput):
         title = self.model._meta.verbose_name_plural.capitalize()
         final_attrs['placeholder'] = str(_('Search ')) + title + ' ...'
         final_attrs['class'] = 'form-control search-query'
-        final_attrs['size'] = '40'
+        final_attrs['size'] = '55'
 
         output = []
 

@@ -157,18 +157,18 @@ class AutocompleteView(View):
                 [term])
 
         # find the first field to use as a label
-        def fields():
-            for field in self.model._meta.fields:
-                if self.is_searchable_field(field):
-                    yield field
+        # def fields():
+        #     for field in self.model._meta.fields:
+        #         if self.is_searchable_field(field):
+        #             yield field
 
-        label = next(fields()).name
+        # label = next(fields()).name
 
-        for (_id, name) in queryset.values_list('id', label):
+        for item in queryset.all():
             context.append(dict(
-                id=_id,
-                value=name,
-                label=name
+                id=item.pk,
+                value=str(item),
+                label=str(item)
                 ))
         return context
 

@@ -1,3 +1,4 @@
+// autocomplete search for admin
 (function($) {
 
   window.AutocompleteSearch = function(source, field_id, field_name, field_title) {
@@ -22,7 +23,7 @@
     this.setTrigger(this.search_input, 'focus');
 
     // nice would be to find the form
-    this.search_form = $('form#changelist-search');
+    this.search_form = $('form#autocomplete-search');
 
     // create the autocomplete
     this.initAutocomplete()
@@ -41,7 +42,8 @@
         if (ui.item) {
           // do something
           $(obj.search_input).attr('value', ui.item.label )
-          $(obj.search_form).submit();
+          var url = document.location + ui.item.id + '/';
+          window.document.location = url;
           $(obj.modal).modal('hide');
         } else {
           alert("Nothing selected, input was " + this.value );

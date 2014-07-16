@@ -40,6 +40,8 @@
             }
           }
         )
+        obj.remove_button.removeClass('btn-primary');
+        obj.remove_button.addClass('disabled');
       event.preventDefault();
       return false;
     });
@@ -49,7 +51,8 @@
       {obj: this},
       function(event) {
         var obj = event.data.obj;
-        $('#remove_' + obj.field_name).removeClass('disabled');
+        obj.remove_button.removeClass('disabled');
+        obj.remove_button.addClass('btn-primary');
       }
     )
 

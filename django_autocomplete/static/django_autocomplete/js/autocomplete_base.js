@@ -40,7 +40,15 @@
     // (because of way the modal is created??)
     $(input).val('');
     $(input).focus();
-    var status = $('span.ui-helper-hidden-accessible').get(0);
+    $('span.ui-helper-hidden-accessible').each(
+      function(idx, value) {
+        $(value).remove();
+    })
+    var status = document.createElement('span');
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'assertive');
+    status.setAttribute('aria-relevant', 'additions');
+    status.setAttribute('class', 'ui-helper-hidden-accessible');
     $(status).insertBefore(input);
     $(status).html('<div>Type some characters ...</div>');
   }
