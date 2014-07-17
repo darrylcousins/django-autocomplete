@@ -42,7 +42,8 @@
         if (ui.item) {
           // do something
           $(obj.search_input).attr('value', ui.item.label )
-          var url = document.location + ui.item.id + '/';
+          var location = document.location.origin + document.location.pathname;
+          var url = location + ui.item.id + '/';
           window.document.location = url;
           $(obj.modal).modal('hide');
         } else {
