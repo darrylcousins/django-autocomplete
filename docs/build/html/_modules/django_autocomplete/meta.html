@@ -50,7 +50,7 @@
 <span class="c"># -*- coding: utf-8 -*-</span>
 
 
-<div class="viewcode-block" id="AutocompleteMeta"><a class="viewcode-back" href="../../meta.html#django_autocomplete.meta.AutocompleteMeta">[docs]</a><span class="k">class</span> <span class="nc">AutocompleteMeta</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="AutocompleteMeta"><a class="viewcode-back" href="../../meta.html#django_autocomplete.meta.AutocompleteMeta">[docs]</a><span class="k">class</span> <span class="nc">AutocompleteMeta</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple meta class to allow the model to define aspects of the autocomplete.</span>
 
@@ -58,6 +58,14 @@
 <span class="sd">    :var path: the path to autocomplete view</span>
 <span class="sd">    :var follow_fks: when searching should ForeignKey fields be followed.</span>
 <span class="sd">    :var fields: list of fields, if empty then all searchable fields are used</span>
+<span class="sd">    :var permissions: bool, string or iter</span>
+
+<span class="sd">    * if ``permissions`` ``False`` (default) no authentication is checked.</span>
+<span class="sd">    * if ``permissions`` ``True`` then request.user must be authenticated.</span>
+<span class="sd">    * if ``permissions`` ``string`` then request.user must have the permission defined by ``string``.</span>
+<span class="sd">    * if ``permissions`` ``iter`` then request.user must have all the permissionis defined in the ``iter``</span>
+
+<span class="sd">    See :class:`django_autocomplete.views.AutocompleteView` for more clarification.</span>
 
 <span class="sd">    For example as a simple object:</span>
 
@@ -91,12 +99,14 @@
     <span class="n">permissions</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">follow_fks</span> <span class="o">=</span> <span class="bp">True</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="p">[],</span> <span class="n">follow_fks</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">permissions</span> <span class="o">=</span> <span class="n">permissions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">follow_fks</span> <span class="o">=</span> <span class="n">follow_fks</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autocomplete</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">autocomplete</span><span class="p">:</span>
+            <span class="n">autocomplete_attrs</span> <span class="o">=</span> <span class="n">autocomplete</span><span class="o">.</span><span class="n">__dict__</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">autocomplete_attrs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">autocomplete_attrs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">autocomplete_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
 </pre></div></div>
 
           </div>

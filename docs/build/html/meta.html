@@ -57,7 +57,7 @@
 <p>The AutocompleteMeta object configures the autocomplete on a model level.</p>
 <span class="target" id="module-django_autocomplete.meta"></span><dl class="class">
 <dt id="django_autocomplete.meta.AutocompleteMeta">
-<em class="property">class </em><tt class="descclassname">django_autocomplete.meta.</tt><tt class="descname">AutocompleteMeta</tt><big>(</big><em>name</em>, <em>path</em>, <em>fields=</em>, <span class="optional">[</span><span class="optional">]</span><em>follow_fks=True</em>, <em>permissions=None</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/meta.html#AutocompleteMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.meta.AutocompleteMeta" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">django_autocomplete.meta.</tt><tt class="descname">AutocompleteMeta</tt><big>(</big><em>autocomplete=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/django_autocomplete/meta.html#AutocompleteMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django_autocomplete.meta.AutocompleteMeta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
 <p>Simple meta class to allow the model to define aspects of the autocomplete.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -69,11 +69,19 @@
 <li><strong>path</strong> &#8211; the path to autocomplete view</li>
 <li><strong>follow_fks</strong> &#8211; when searching should ForeignKey fields be followed.</li>
 <li><strong>fields</strong> &#8211; list of fields, if empty then all searchable fields are used</li>
+<li><strong>permissions</strong> &#8211; bool, string or iter</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<ul class="simple">
+<li>if <tt class="docutils literal"><span class="pre">permissions</span></tt> <tt class="docutils literal"><span class="pre">False</span></tt> (default) no authentication is checked.</li>
+<li>if <tt class="docutils literal"><span class="pre">permissions</span></tt> <tt class="docutils literal"><span class="pre">True</span></tt> then request.user must be authenticated.</li>
+<li>if <tt class="docutils literal"><span class="pre">permissions</span></tt> <tt class="docutils literal"><span class="pre">string</span></tt> then request.user must have the permission defined by <tt class="docutils literal"><span class="pre">string</span></tt>.</li>
+<li>if <tt class="docutils literal"><span class="pre">permissions</span></tt> <tt class="docutils literal"><span class="pre">iter</span></tt> then request.user must have all the permissionis defined in the <tt class="docutils literal"><span class="pre">iter</span></tt></li>
+</ul>
+<p>See <a class="reference internal" href="views.html#django_autocomplete.views.AutocompleteView" title="django_autocomplete.views.AutocompleteView"><tt class="xref py py-class docutils literal"><span class="pre">django_autocomplete.views.AutocompleteView</span></tt></a> for more clarification.</p>
 <p>For example as a simple object:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django_autocomplete.meta</span> <span class="kn">import</span> <span class="n">AutocompleteMeta</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">TestModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>

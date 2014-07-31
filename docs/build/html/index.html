@@ -57,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="meta.html">Meta</a></li>
 <li class="toctree-l1"><a class="reference internal" href="urls.html">Urls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="views.html">Views</a></li>
 <li class="toctree-l1"><a class="reference internal" href="forms.html">Forms</a></li>
 </ul>
 </div>
@@ -85,7 +86,7 @@
 $ cd django-project
 </pre></div>
 </div>
-<p>The test project uses <a class="reference external" href="&lt;https://github.com/dyve/django-bootstrap3&gt;">django-bootstrap3</a> and <a class="reference external" href="&lt;https://github.com/darrylcousins/django-admin-bootstrapped3&gt;">bootstrapped3</a> admin.  these extra
+<p>The test project uses <a class="reference external" href="https://github.com/dyve/django-bootstrap3">django-bootstrap3</a> and <a class="reference external" href="https://github.com/darrylcousins/django-admin-bootstrapped3">bootstrapped3</a> admin.  these extra
 packages can be installed with:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ pip install -r requirements.txt
 </pre></div>
@@ -106,22 +107,11 @@ $ python manage.py loaddata project/fixtures/project.json
 <p>There are no urls beyond the admin screens and api json views. It attempts to
 demonstrate the autocomplete widgets. All models demonstrate some aspect of the widgets.</p>
 </div>
-<div class="section" id="run-tests">
-<h2>Run Tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h2>
-<p>Run the tests:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ python runtests.py
-</pre></div>
-</div>
-<p>Run the tests with coverage (needs the extra packages as mentioned above):</p>
-<div class="highlight-python"><div class="highlight"><pre>$ python runtests.py coverage
-</pre></div>
-</div>
-</div>
 <div class="section" id="setting-up-models-to-use-autocomplete">
 <h2>Setting up models to use autocomplete<a class="headerlink" href="#setting-up-models-to-use-autocomplete" title="Permalink to this headline">¶</a></h2>
 <p>To set up models to use the autocomplete widgets they need to have a api view
 that will return json which is a list of the items filtered by the request
-variable <cite>term</cite>, which itself is the default search variable sent with request
+variable <tt class="docutils literal"><span class="pre">term</span></tt>, which itself is the default search variable sent with request
 by the <a class="reference external" href="http://jqueryui.com/autocomplete/">jqueryui autocomplete widget</a>.</p>
 <p>The design decision of this package is to have configuration made at the model level:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
@@ -136,9 +126,9 @@ true then the request user must be authenticated, if a string then the single
 permission is checked, if a list then the user must have all permissions in the
 list (see <a class="reference external" href="https://docs.djangoproject.com/en/dev/ref/contrib/auth/#django.contrib.auth.models.User.has_perm">has_perms</a>).</p>
 <p>The default is <tt class="docutils literal"><span class="pre">None</span></tt>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span>      <span class="n">permissions</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-<span class="o">...</span>      <span class="n">permissions</span><span class="o">=</span><span class="s">&#39;is_staff&#39;</span><span class="p">,</span>
-<span class="o">...</span>      <span class="n">permissions</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;is_staff&#39;</span><span class="p">],</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="o">...</span>      <span class="n">permissions</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>         <span class="c"># user must be authenticated</span>
+<span class="o">...</span>      <span class="n">permissions</span><span class="o">=</span><span class="s">&#39;is_staff&#39;</span><span class="p">,</span>   <span class="c"># user must have permission is_staff</span>
+<span class="o">...</span>      <span class="n">permissions</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;is_staff&#39;</span><span class="p">],</span> <span class="c"># user must have all permissions in list of permissions</span>
 </pre></div>
 </div>
 <p>The default is to filter on all Char and Text fields but the developer can
@@ -155,14 +145,14 @@ related by ForeignKey, but this can be disabled:</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">setting an attribute <cite>autocomplete</cite> that is an instance of
-<cite>:class:django_autocomplete.meta.Autocomplete</cite> is required for each model
+<a class="reference internal" href="meta.html#django_autocomplete.meta.AutocompleteMeta" title="django_autocomplete.meta.AutocompleteMeta"><tt class="xref py py-class docutils literal"><span class="pre">django_autocomplete.meta.AutocompleteMeta</span></tt></a> is required for each model
 chosen to use autocomplete widgets.</p>
 </div>
 </div>
 <div class="section" id="urls">
 <h2>Urls<a class="headerlink" href="#urls" title="Permalink to this headline">¶</a></h2>
 <p>As can be seen above, each model sets its path to the api view. In order for
-these views to be created set the following in <cite>urls.py</cite>:</p>
+these views to be created set the following in <tt class="docutils literal"><span class="pre">urls.py</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">url</span><span class="p">(</span><span class="s">r&#39;&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s">&#39;django_autocomplete.urls&#39;</span><span class="p">)),</span>
 </pre></div>
 </div>
@@ -171,8 +161,8 @@ these views to be created set the following in <cite>urls.py</cite>:</p>
 <p class="last">do not use a prefix (e.g. r&#8217;api/&#8217;) as only the path set by
 <cite>MyModel.autocomplete.path</cite> is used.</p>
 </div>
-<p>Once this is done then the view (following the <cite>MyModel</cite> example)
-<cite>/api/filter/mymodel/</cite> will be available to the autocomplete widgets:</p>
+<p>Once this is done then the view (following the <tt class="docutils literal"><span class="pre">MyModel</span></tt> example)
+<tt class="docutils literal"><span class="pre">/api/filter/mymodel/</span></tt> will be available to the autocomplete widgets:</p>
 <div class="highlight-python"><div class="highlight"><pre>http://localhost:8000/api/filter/mymodel/?term=se
 </pre></div>
 </div>
@@ -180,9 +170,9 @@ these views to be created set the following in <cite>urls.py</cite>:</p>
 <div class="section" id="the-view">
 <h2>The View<a class="headerlink" href="#the-view" title="Permalink to this headline">¶</a></h2>
 <p>The view used to answer the get request is
-:class`django_autocomplete.views.AutocompleteView`. This view has its own
+<a class="reference internal" href="views.html#django_autocomplete.views.AutocompleteView" title="django_autocomplete.views.AutocompleteView"><tt class="xref py py-class docutils literal"><span class="pre">django_autocomplete.views.AutocompleteView</span></tt></a>. This view has its own
 <tt class="docutils literal"><span class="pre">search</span></tt> method but the developer can provide a custom search method for the
-autocomplete. From the :class`AutocompleteView`:</p>
+autocomplete. From the <a class="reference internal" href="views.html#django_autocomplete.views.AutocompleteView" title="django_autocomplete.views.AutocompleteView"><tt class="xref py py-class docutils literal"><span class="pre">django_autocomplete.views.AutocompleteView</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre>// the developer can implement own search method
 if hasattr(self.model.objects, &#39;search&#39;):
     queryset = self.model.objects.search(
@@ -201,9 +191,8 @@ else:
 <div class="section" id="formfield-widgets">
 <h3>Formfield widgets<a class="headerlink" href="#formfield-widgets" title="Permalink to this headline">¶</a></h3>
 <p>The only examples found in the example project hooks the widgets into the
-<a class="reference external" href="&lt;https://github.com/darrylcousins/django-admin-bootstrapped3&gt;">bootstrapped3</a>
-admin. To use the widgets all that is required in most cases is to set
-<cite>formfield_overrides</cite>:</p>
+<a class="reference external" href="https://github.com/darrylcousins/django-admin-bootstrapped3">bootstrapped3</a> admin. To use the widgets all that is required in most cases is
+to set <tt class="docutils literal"><span class="pre">formfield_overrides</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyModelAdmin</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">ModelAdmin</span><span class="p">):</span>
     <span class="n">formfield_overrides</span> <span class="o">=</span> <span class="p">{</span>
       <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;widget&#39;</span><span class="p">:</span> <span class="n">AutocompleteSelectWidget</span><span class="p">},</span>
@@ -219,12 +208,12 @@ admin. To use the widgets all that is required in most cases is to set
       <span class="p">}</span>
 </pre></div>
 </div>
-<p><cite>AutocompleteSelectMultipleWidget</cite> can also be used in reverse many to one
+<p><tt class="xref py py-class docutils literal"><span class="pre">AutocompleteSelectMultipleWidget</span></tt> can also be used in reverse many to one
 relationships but an admin form will be required. See
-<cite>class:project.forms.CountryModelForm</cite> for an example.</p>
+<tt class="xref py py-class docutils literal"><span class="pre">project.forms.CountryModelForm</span></tt> for an example.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For inlines the template <cite>admin/inlines/inline_tabular.html</cite> has been
+<p class="last">For inlines the template <tt class="docutils literal"><span class="pre">dmin/inlines/inline_tabular.html</span></tt> has been
 altered to hook the widgets into the javascript.</p>
 </div>
 </div>
@@ -247,31 +236,38 @@ altered to hook the widgets into the javascript.</p>
     <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">TaggedItemAdmin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">formfield_for_foreignkey</span><span class="p">(</span><span class="n">db_field</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Although untested it should allow for a different name for the <tt class="docutils literal"><span class="pre">object_id</span></tt> field and for models with more than one <tt class="docutils literal"><span class="pre">GenericForeignKey</span></tt>.</p>
-<p>It has not been tested for inline forms but there is an example of usage in <a class="reference external" href="&lt;https://github.com/darrylcousins/django-project&gt;">django-project</a>.</p>
+<p>Although untested it should allow for a different name for the <tt class="docutils literal"><span class="pre">object_id</span></tt>
+field and for models with more than one <tt class="docutils literal"><span class="pre">GenericForeignKey</span></tt>.</p>
+<p>It has not been tested for inline forms but there is an example of usage in
+<a class="reference external" href="https://github.com/darrylcousins/django-project">django-project</a>.</p>
 </div>
 <div class="section" id="changelist-search">
 <h3>Changelist Search<a class="headerlink" href="#changelist-search" title="Permalink to this headline">¶</a></h3>
-<p><cite>class:django_autocomplete.widgets.SearchInput</cite> can be used in the
-<a class="reference external" href="&lt;https://github.com/darrylcousins/django-admin-bootstrapped3&gt;">bootstrapped3</a> admin list views to provide autocomplete search for autocomplete
-enabled models.</p>
+<p><a class="reference internal" href="widgets.html#django_autocomplete.widgets.SearchInput" title="django_autocomplete.widgets.SearchInput"><tt class="xref py py-class docutils literal"><span class="pre">django_autocomplete.widgets.SearchInput</span></tt></a> can be used in the
+<a class="reference external" href="https://github.com/darrylcousins/django-admin-bootstrapped3">bootstrapped3</a> admin list views to provide autocomplete search for autocomplete
+enabled models. On selection in the autocomplete the change form view is
+displayed. The standard search form is then also included which abides by the
+<tt class="docutils literal"><span class="pre">ModelAdmin.search_fields</span></tt> to filter the list.</p>
 <p>This must be explicitly configured in the ModelAdmin:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyModelAdmin</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">ModelAdmin</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django_autocomplete.forms</span> <span class="kn">import</span> <span class="n">searchform_factory</span>
+
+<span class="k">class</span> <span class="nc">MyModelAdmin</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">ModelAdmin</span><span class="p">):</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span>
     <span class="n">search_form</span> <span class="o">=</span> <span class="n">searchform_factory</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>..note:: The template <cite>admin/search_form.html</cite> tests for the presence</dt>
-<dd><cite>model_admin.search_form</cite> and renders the form if defined.</dd>
-</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The template <tt class="docutils literal"><span class="pre">admin/search_form.html</span></tt> tests for the presence of the attribute
+<tt class="docutils literal"><span class="pre">model_admin.search_form</span></tt> and renders the form if defined.</p>
+</div>
 </div>
 </div>
 <div class="section" id="using-widgets-outside-the-admin">
 <h2>Using Widgets Outside the Admin<a class="headerlink" href="#using-widgets-outside-the-admin" title="Permalink to this headline">¶</a></h2>
 <p>Each of the widgets need to be aware of the model they are searching. Thus they
-have access to the <cite>autocomplete</cite> attribute of the model. The example form
-<cite>:model:django_autocomplete.forms.SearchForm</cite> provides and example of setting
+have access to the <tt class="docutils literal"><span class="pre">autocomplete</span></tt> attribute of the model. The example form
+<tt class="xref py py-class docutils literal"><span class="pre">projects.forms.SearchForm</span></tt> provides and example of setting
 up a form to be model aware. It closely follows the django ModelForm to do so.</p>
 </div>
 </div>
@@ -297,7 +293,6 @@ up a form to be model aware. It closely follows the django ModelForm to do so.</
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#build-and-run-test-project">Build and Run Test Project</a></li>
-<li><a class="reference internal" href="#run-tests">Run Tests</a></li>
 <li><a class="reference internal" href="#setting-up-models-to-use-autocomplete">Setting up models to use autocomplete</a></li>
 <li><a class="reference internal" href="#urls">Urls</a></li>
 <li><a class="reference internal" href="#the-view">The View</a></li>

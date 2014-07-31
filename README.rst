@@ -24,7 +24,7 @@ Get the test project from github::
     $ git clone https://github.com/darrylcousins/django-project.git
     $ cd django-project
 
-The test project uses django-bootstrap3_ and bootstrapped3_ admin.  these extra
+The test project uses `django-bootstrap3`_ and `bootstrapped3`_ admin.  these extra
 packages can be installed with::
 
     $ pip install -r requirements.txt
@@ -132,9 +132,8 @@ Formfield widgets
 *****************
 
 The only examples found in the example project hooks the widgets into the
-bootstrapped3_
-admin. To use the widgets all that is required in most cases is to set
-``formfield_overrides``::
+`bootstrapped3`_ admin. To use the widgets all that is required in most cases is
+to set ``formfield_overrides``::
 
         class MyModelAdmin(admin.ModelAdmin):
             formfield_overrides = {
@@ -187,8 +186,10 @@ Changelist Search
 *****************
 
 :class:`django_autocomplete.widgets.SearchInput` can be used in the
-bootstrapped3_ admin list views to provide autocomplete search for autocomplete
-enabled models.
+`bootstrapped3`_ admin list views to provide autocomplete search for autocomplete
+enabled models. On selection in the autocomplete the change form view is
+displayed. The standard search form is then also included which abides by the
+``ModelAdmin.search_fields`` to filter the list.
 
 This must be explicitly configured in the ModelAdmin::
 
@@ -206,9 +207,9 @@ Using Widgets Outside the Admin
 
 Each of the widgets need to be aware of the model they are searching. Thus they
 have access to the ``autocomplete`` attribute of the model. The example form
-`:class.forms.SearchForm` provides and example of setting
+:class:`projects.forms.SearchForm` provides and example of setting
 up a form to be model aware. It closely follows the django ModelForm to do so.
 
-.. _bootstrapped3: <https://github.com/darrylcousins/django-admin-bootstrapped3>
-.. _django-project: <https://github.com/darrylcousins/django-project>
-.. _django-bootstrap3: <https://github.com/dyve/django-bootstrap3>
+.. _bootstrapped3: https://github.com/darrylcousins/django-admin-bootstrapped3
+.. _django-project: https://github.com/darrylcousins/django-project
+.. _django-bootstrap3: https://github.com/dyve/django-bootstrap3
