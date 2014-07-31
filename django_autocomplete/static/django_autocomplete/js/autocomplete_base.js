@@ -77,25 +77,42 @@
       source: '/' + this.source,
       minLength: 1,
       delay: 300,
-      appendTo: this.items,
-      search: function(event, ui) {
-        $(this.spinner).show();
-      },
-      response: function(event, ui) {
-        $(this.spinner).hide();
-        if($('#filter-items span:first').length) {
-          $('#filter-items span:first').remove();
+      autoFocus: true
+    });
+    $(this.input).autocomplete( "option", "appendTo", this.items);
+
+    $(this.input).bind( "autocompletesearch",
+      {obj: this},
+      function(event, ui) {
+        var obj = event.data.obj;
+        $(obj.spinner).show();
+      }
+    )
+
+    $(this.input).bind( "autocompleteresponse",
+      {obj: this},
+      function(event, ui) {
+        var obj = event.data.obj;
+        $(obj.spinner).hide();
+        var note = $(obj.input).prev('span.ui-helper-hidden-accessible');
+        if(note.find('div:first').length) {
+          note.find('div:first').remove();
         }
-        if (!ui.content.length) {
-          $('#filter-items').prepend('<span class="text-muted">No results found.<span>');
+        if (ui.content.length == 0) {
+          note.prepend('<div>No results found for the entered text.<div>');
         }
-      },
-      change: function(event, ui) {
-        $(this.modal).modal('hide');
+      }
+    )
+
+    $(this.input).bind( "autocompletechange",
+      {obj: this},
+      function(event, ui) {
+        var obj = event.data.obj;
+        $(obj.modal).modal('hide');
         event.preventDefault();
         return false;
       }
-    });
+    )
   }
 
   AutocompleteBase.prototype.buildModal = function() {
