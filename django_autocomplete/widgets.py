@@ -151,6 +151,13 @@ class AutocompleteSelectWidget(forms.Select):
             return formats.localize_input(value)
         return value
 
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        "Helper function for building an attribute dictionary."
+        attrs = dict(self.attrs, **kwargs)
+        if extra_attrs:
+            attrs.update(extra_attrs)
+        return attrs
+
     def value_from_datadict(self, data, files, name):
         """
         Given a dictionary of data and this widget's name, returns the value
@@ -166,14 +173,17 @@ class AutocompleteSelectWidget(forms.Select):
         The hidden input holds the pk value of the fk and will be collected on
         submission of form.
         """
+
         model = self.choices.field.queryset.model
         title = model._meta.verbose_name_plural
-        if value is None:
+        try:
+            value = int(value)
+            str_value = str(model.objects.get(pk=value))
+            str_value = ''
+            str_value = force_text(self._format_value(str_value))
+        except (ValueError, TypeError):
             value = ''
             str_value = ''
-        else:
-            str_value = str(model.objects.get(pk=value))
-            str_value = force_text(self._format_value(str_value))
         final_attrs = self.build_attrs(attrs, name=name)
         final_attrs['data-relation'] = name
         final_attrs['title'] = title
