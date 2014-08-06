@@ -176,7 +176,6 @@ class AutocompleteSelectWidget(forms.Select):
 
         model = self.choices.field.queryset.model
         title = model._meta.verbose_name_plural
-        print(value, model)
         try:
             value = int(value)
             str_value = str(model.objects.get(pk=value))
