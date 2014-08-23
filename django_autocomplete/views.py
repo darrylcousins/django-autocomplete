@@ -145,24 +145,9 @@ class AutocompleteView(View):
         if not term:
             return context
 
-        # the developer can implement own search method
-        if hasattr(self.model.objects, 'search'):
-            queryset = self.model.objects.search(
-                self.model.objects.all(),
-                self.request,
-                [term])
-        else:
-            queryset = self.search(
-                self.model.objects.all(),
-                [term])
-
-        # find the first field to use as a label
-        # def fields():
-        #     for field in self.model._meta.fields:
-        #         if self.is_searchable_field(field):
-        #             yield field
-
-        # label = next(fields()).name
+        queryset = self.search(
+            self.model.objects.all(),
+            [term])
 
         for item in queryset.all():
             context.append(dict(
